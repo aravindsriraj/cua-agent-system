@@ -326,6 +326,24 @@ def test_hover_menu(server):
     assert asyncio.run(go())
 
 
+def test_a_cross_site_iframe_is_not_a_policy_breach(server):
+    """Sites embed other domains (ads, video, payments). The allowlist is about where the tab goes, not its iframes."""
+    from cua.surface import WebSurface
+
+    async def go():
+        s = WebSurface(["127.0.0.1"], headless=True)
+        await s.open(server + "menu.html")
+        try:
+            await s.page.evaluate("u => new Promise(r => document.body.append(Object.assign("
+                                  "document.createElement('iframe'), {src: u, onload: r})))",
+                                  server.replace("127.0.0.1", "localhost") + "done.html")
+            return s.blocked
+        finally:
+            await s.close()
+
+    assert asyncio.run(go()) == []
+
+
 RISKY = {"decision": "require_confirmation", "explanation": "Submits a form"}
 
 

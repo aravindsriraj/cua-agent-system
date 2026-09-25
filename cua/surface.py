@@ -105,7 +105,7 @@ class WebSurface:
 
     async def _route(self, route) -> None:
         req = route.request
-        nav = req.is_navigation_request()
+        nav = req.is_navigation_request() and req.frame.parent_frame is None  # the tab itself (incl. popups), not its iframes
         if nav and not domain_allowed(req.url, self.allowed):
             self.blocked.append(req.url)
             return await route.abort("blockedbyclient")

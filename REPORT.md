@@ -163,7 +163,7 @@ operator console, but the ownership model and hand-back are real (see `evidence/
   - Evidence screenshots mask only password fields.
   - Risk has no keyword floor: if the AI misses a risky step, a draft runs it without approval. The mitigation is the review in `cua show` before `cua approve`.
   - Gemini's safety acknowledgement must be a plain-object result. The documented text+image shape returns 400 (verified live).
-  - The allowlist governs navigation, not a page's own requests.
+  - The allowlist governs where the tab navigates (pop-ups included), not a page's own requests or iframes (ads, video, payments).
 
 ## 7. Cuts
 
