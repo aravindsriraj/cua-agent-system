@@ -1,169 +1,218 @@
 # cua: teach a web app once, replay it forever
 
-Many web apps have no API: legacy bank back-office screens, admin consoles, vendor portals, internal tools. Point `cua` at
-**any web app URL** with a goal in plain English. Gemini **computer use** works out the task on the real UI once. `cua` saves
-what it learned as a **reviewable, versioned capability file**, then **replays it deterministically**: fast, cheap, and the
-same every time, with no model. When a replay meets something new, a person takes over the same live browser (or, with
-`--ai`, the AI decides), and the capability **remembers** it, so next time plain code handles it.
+Many business apps have no API: bank back offices, admin consoles, vendor portals. `cua` automates them through their
+normal web UI, on **any website**:
 
+1. **Record once, with AI.** Give it a URL and a goal in plain English. Gemini computer use does the task in a real browser.
+2. **Save a capability file.** What worked becomes a small YAML file with typed inputs and outputs. You can read it,
+   diff it and review it like code.
+3. **Replay with plain code.** `cua run` repeats the task with new inputs. There is no model involved, so it is fast,
+   free and the same every time.
+4. **Learn from surprises.** When a replay meets a screen it has never seen, a person takes over the same browser, or
+   the AI decides if you pass `--ai`. The file remembers the answer, so next time plain code handles it.
+
+Design write-up: [REPORT.md](REPORT.md) · Proof from real runs: [evidence/](evidence/README.md)
+
+## How it works
+
+```mermaid
+flowchart LR
+    GOAL(["Start URL<br/>+ goal in plain English"])
+
+    subgraph REC["① cua record · once · the AI drives"]
+        direction TB
+        PLAN["AI reads the goal<br/>and picks the inputs"]
+        LOOP["Gemini computer use<br/>looks at a screenshot,<br/>chooses the next action"]
+        GROUND["Grounding<br/>screen point → element<br/>→ verified locators"]
+        REVIEW["AI review<br/>checkpoints · success ·<br/>risky steps"]
+        PLAN --> LOOP
+        LOOP -- "act" --> GROUND
+        GROUND -- "new screenshot" --> LOOP
+        LOOP -- "goal reached" --> REVIEW
+    end
+
+    FILE[("Capability file<br/>artifacts/NAME/vN.yaml<br/><br/>typed inputs + outputs<br/>steps + checkpoints<br/>known outcomes<br/>draft or approved")]
+
+    subgraph RUN["② cua run · every time · plain code, no model"]
+        direction TB
+        STEP["Each step:<br/>find element → act →<br/>check the checkpoint"]
+        KNOWN["Known surprise<br/>code handles it: remembered screen,<br/>server error → retry,<br/>missing record → NOT_FOUND"]
+        NEW["New surprise<br/>a person takes over the same browser,<br/>or the AI decides (--ai)"]
+        STEP -- "known" --> KNOWN
+        STEP -- "new" --> NEW
+    end
+
+    INPUTS(["Inputs<br/>account_number=12345"])
+    RESULT(["Result<br/>success · business outcome<br/>needs confirmation · failed"])
+
+    GOAL --> REC --> FILE --> RUN --> RESULT
+    INPUTS --> RUN
+    RUN -. "what was decided is<br/>remembered as vN+1" .-> FILE
 ```
-cua record URL "goal"   →   artifacts/<name>/v1.yaml   →   cua run <name> inputs…   →   ✔ success / ● business outcome / ✖ failure
-   (AI decides)              (typed, reviewable)             (plain code, no model)
-```
 
-Design write-up: [REPORT.md](REPORT.md) · Proof it works: [evidence/](evidence/README.md)
+Guardrails apply to every action, whether the AI or a person takes it: a domain allowlist, approval before risky steps,
+and secrets that are never saved.
 
-## Setup
+## Quick start
 
 Needs Python 3.11+ and [uv](https://docs.astral.sh/uv/).
 
 ```bash
 uv sync
 uv run playwright install chromium
-cp .env.example .env        # then put your GEMINI_API_KEY in it
+cp .env.example .env        # then add your GEMINI_API_KEY
 ```
 
-`.env` holds the Gemini key and any secrets your goals use. `.env.example` already contains the public demo passwords
-(`PASSWORD` for ParaBank's built-in customer `john`, `SAUCE_PASSWORD` for SauceDemo). Secrets are never written to artifacts, logs or screenshots.
+`.env` holds the Gemini key and the secrets your goals use. `.env.example` already has the public demo passwords:
+`PASSWORD` for ParaBank's customer `john`, `SAUCE_PASSWORD` for SauceDemo.
 
-To try replay with no Gemini key, copy the capabilities recorded for the evidence: `cp -R evidence/artifacts artifacts`.
+**No Gemini key?** Replay needs none. Copy the capabilities recorded for the evidence with
+`cp -R evidence/artifacts artifacts`, then skip to step 3 of Demo 1.
 
-## Five commands
+## The five commands
 
 ```bash
-cua record URL "GOAL"          # learn a new capability (Gemini drives a visible browser)
-cua run NAME key=value …       # replay it with no model, one-line result
-cua list                       # every capability: version, status, last result
-cua show NAME                  # plain-English card: what it does, needs, returns, its steps, what can go wrong
-cua approve NAME               # draft → approved: lets risky steps (transfers, submits) run unattended
+cua record URL "GOAL"      # learn a new capability (Gemini drives a visible browser)
+cua run NAME key=value …   # replay it with new inputs, no model
+cua list                   # all capabilities: version, status, last result
+cua show NAME              # a plain-English card: what it needs, returns, does, and what can go wrong
+cua approve NAME           # draft → approved: lets risky steps (transfer, pay, submit) run unattended
 ```
 
-Run them with `uv run cua …`, or activate the venv. Write the goal in **plain English**. The AI decides which values in
-it are inputs; `cua record` prints them, with their names. The only thing you mark is a secret, as `{name:secret}`,
-because the model must never see its value. It is read from `NAME` in `.env`, or asked for once.
+Run them as `uv run cua …`, or activate the virtualenv first.
 
-## Who decides what
+**Writing a goal:** use plain English. The AI decides which values are inputs, and `cua record` prints their names.
+The only thing you mark is a **secret**, written `{name:secret}`. The model only ever sees a placeholder. The real
+value is read from `NAME` in `.env` (or asked for once), typed at the keyboard, and never saved.
 
-| The AI decides | Code does (the same for everyone, AI or human) |
-|---|---|
-| **before recording:** which values in your goal are inputs | runs every recorded step through verified locators, and checks each checkpoint |
-| **while recording:** every action, and which ones are risky (Gemini's safety flag) | handles what it already knows: remembered outcomes, server errors (retry), a missing record (`NOT_FOUND`) |
-| **after recording:** each step's checkpoint, the success condition, more risky steps | enforces the guarantees: allowlist, approval before risky steps, never retrying or re-running a risky step, attempt limits |
-| **during replay, only with `--ai` and only when something is unexpected:** what the screen means and what to do (close it, retry, start over, return an answer, fail), and where a moved element went | remembers every decision (AI or human) in a new draft version, so next time code handles it alone; keeps secrets and personal data out of files |
+## Demo 1: a bank (live ParaBank, about 3 minutes)
 
-**Replay is plain code with no model.** Something unexpected goes to a person, or fails with evidence when nobody is
-watching. `cua run --ai` lets the AI handle it instead. Code never second-guesses an AI decision: it applies it and keeps
-the guarantees. People decide approvals, CAPTCHAs, and anything the AI reports it is unsure about.
-
-## Demo 1: a bank app (live ParaBank, about 3 minutes)
-
-ParaBank is Parasoft's public demo bank. It wipes its data from time to time, which deletes registered customers. Its
-built-in customer `john` (password `demo`, accounts 12345, 12456, …) comes back after every wipe, so the demo uses it.
-If john is erroring, register a customer on ParaBank's Register page and use its username and account number.
+[ParaBank](https://parabank.parasoft.com/parabank/) is a public demo bank. It wipes its data now and then, but its
+built-in customer `john` (password `demo`, accounts 12345, 12456, …) always comes back. If john is broken, register a
+customer on ParaBank's Register page and use that username and account number instead.
 
 ```bash
 # 1. Learn it. A browser opens; the bar at the bottom shows who is in control.
 uv run cua record https://parabank.parasoft.com/parabank/index.htm \
   "Log in as john with {password:secret}, open account 12345 and read its balance" \
   --name parabank-account-balance
-#    ✔ Learned 'parabank-account-balance' v1 (6 steps)
-#      AI read the goal: password (secret), username (string), account_number (string)
+#   ✔ Learned 'parabank-account-balance' v1 (6 steps)
+#     AI read the goal: password (secret), username (string), account_number (string)
 
 # 2. Read it.
 uv run cua show parabank-account-balance
 
-# 3. Replay it with the input names printed above. Try other values.
-uv run cua run parabank-account-balance username=john account_number=12345     # ✔ Success: balance: …
-uv run cua run parabank-account-balance username=john account_number=99999     # ● NOT_FOUND (a normal answer, not a crash)
-uv run cua run parabank-account-balance username=john                   # ✖ Bad input: missing input 'account_number' (before any browser opens)
+# 3. Replay it. Use the input names printed in step 1.
+uv run cua run parabank-account-balance username=john account_number=12345   # ✔ Success: balance: …
+uv run cua run parabank-account-balance username=john account_number=99999   # ● NOT_FOUND: an answer, not a crash
+uv run cua run parabank-account-balance username=john                        # ✖ missing input, before any browser opens
 
-# 4. Break it on purpose. Something new: you decide (or the AI, with --ai). After that, code handles it.
-uv run cua run parabank-account-balance username=john account_number=12345 --inject modal@s5            # asks YOU (see below)
-uv run cua run parabank-account-balance username=john account_number=12345 --inject expire_session@s5 --ai   # AI: start over
-uv run cua run parabank-account-balance username=john account_number=12345 --inject expire_session@s5   # code, no AI
-uv run cua run parabank-account-balance username=john account_number=12345 --inject http500@s5          # code: retry
+# 4. Break it on purpose to see how surprises are handled.
+uv run cua run parabank-account-balance username=john account_number=12345 --inject modal@s5               # asks you
+uv run cua run parabank-account-balance username=john account_number=12345 --inject expire_session@s5 --ai  # the AI decides
+uv run cua run parabank-account-balance username=john account_number=12345 --inject http500@s5             # code retries
 ```
 
-On the pop-up, the bar turns red (**⚠️ Needs you**). Click **Take over**, close the pop-up, then **This screen means… →
-"A pop-up I closed" → Save**. The run finishes, and the next run closes that pop-up by itself.
+When the injected pop-up appears, the bar turns red (**⚠️ Needs you**). Click **Take over**, close the pop-up, then
+choose **This screen means… → "A pop-up I closed" → Save**. The run finishes, and every later run closes that pop-up
+by itself.
 
-**Risky actions** (transfer, pay, submit…) pause for **Approve / Deny** while recording. A **draft** capability returns
-`needs_confirmation` instead of running them unattended. After `cua approve`, they run.
+**Risky steps** such as a transfer pause for **Approve / Deny** while recording. On replay, a **draft** capability stops
+before them with `needs_confirmation`. After `cua approve`, they run unattended.
 
-## Demo 2: any other web app (live SauceDemo shop)
+## Demo 2: any other website (live SauceDemo shop)
 
-Nothing is site-specific. The same command learns a shopping checkout:
+Nothing in `cua` is specific to banks. The same command learns a shop checkout:
 
 ```bash
 uv run cua record https://www.saucedemo.com/ \
   "Log in as standard_user with {sauce_password:secret}, add the Sauce Labs Backpack to the cart, check out as Ada Lovelace with postal code 10001, reach the checkout overview page and read the item total" \
   --name saucedemo-checkout
 
-uv run cua show saucedemo-checkout        # shows the input names the AI chose, e.g. product_name, first_name
-uv run cua run saucedemo-checkout username=standard_user "product_name=Sauce Labs Bike Light" first_name=Grace last_name=Hopper postal_code=94016
-# ✔ Success: item_total: 9.99      ("Add to cart" is recorded as "the button in the row for {product_name}")
+uv run cua run saucedemo-checkout username=standard_user "product_name=Sauce Labs Bike Light" \
+  first_name=Grace last_name=Hopper postal_code=94016
+#   ✔ Success: item_total: 9.99
 ```
 
-**What works on any site:**
-- plain HTML or single-page apps, frames and iframes, shadow DOM, pop-ups and new tabs
-- dropdowns, hover menus and double-click
-- lists and tables ("the Edit button in the row for {id}")
-- logins, including SSO on another domain, via `--allow`
+"Add to cart" is saved as *the button in the row for `{product_name}`*, so the same file works for any product.
 
-**Not automated; a human steps in instead:**
-- CAPTCHAs and bot walls (never solved, by design)
-- file uploads and drag-and-drop (not supported yet)
+## Who decides what
 
-Apps drawn on a canvas fall back to screen coordinates, and every use of that fallback is flagged as fragile.
+The AI makes the judgment calls. Code carries them out and keeps the guarantees. Code never second-guesses the AI.
 
-To regenerate everything in `evidence/`: `./scripts/make_evidence.sh`.
+| | The AI decides | Code does |
+|---|---|---|
+| **Recording** | which values in the goal are inputs · every action · which steps are risky · each step's checkpoint and the success condition | turns each click into verified locators · acts through them · saves the file |
+| **Replay** | nothing, by default · with `--ai`: what a new screen means, and where a moved element went | runs the steps · handles known screens, server errors and missing records · asks a person about anything new |
+| **Always** | | domain allowlist · approval before risky steps · never retries a risky step · attempt limits · keeps secrets and personal data out of files |
 
-## Without live services
+People decide approvals, CAPTCHAs (never solved automatically), and new screens during replay unless `--ai` is on.
+
+## When a replay meets something unexpected
+
+| What happens | What `cua` does | Decided by |
+|---|---|---|
+| The page tries to leave the allowed domains | stops: `failed POLICY_BLOCKED` | code |
+| A screen the file already knows (e.g. a pop-up) | handles it as remembered: close it, retry, start over, return an answer, or stop | code |
+| Server error (HTTP 5xx) | waits (2 s, then 4 s) and reloads | code |
+| The requested record doesn't exist (account 99999) | returns `business_outcome NOT_FOUND` | code |
+| A risky step on a draft capability | stops before it: `needs_confirmation`, nothing submitted | code |
+| Anything new | a person takes over the same browser and labels the screen, or the AI decides with `--ai`; saved as the next version | person or AI |
+| Anything new, nobody watching (`--headless`) | `failed UNKNOWN_STATE`, with a screenshot and a page snapshot | code |
+
+Every run writes `runs/<id>/`: a redacted event log, screenshots, and `result.json`.
+
+## What works where
+
+- **Works on any site:** plain HTML and single-page apps, frames and iframes, shadow DOM, pop-ups and new tabs,
+  dropdowns, hover menus, double-click, lists and tables ("the Edit button in the row for {id}"), and logins,
+  including SSO on another domain with `--allow`.
+- **A person steps in:** CAPTCHAs and bot walls (never solved, by design).
+- **Not supported yet:** file uploads and drag-and-drop.
+- **Fragile:** apps drawn on a canvas fall back to screen coordinates, and every such step is flagged as drift.
+
+## Tests (no network, no API key)
 
 ```bash
-uv run pytest     # ~3 min, no network, no API key
+uv run pytest     # 30 tests, a few minutes
 ```
 
-The tests drive the **real** recorder and replayer against a local "legacy" site (`tests/site/`: table layouts, no ids,
-a per-row button, late-loading values, cookie session, a dropdown). Scripted stand-ins play every AI part, so they cover:
-- every outcome class: success, other inputs, NOT_FOUND, server error, slow load, allowlist and action blocks
-- with `--ai`, the AI deciding and the artifact remembering: a pop-up closed, a logout restarted, a business outcome, a moved element
-- decisions applied as given, repairs written back only when the run completes
-- the guarantees: risky-step approval, and a restart never repeating a risky step
-- a human takeover that teaches the artifact, and Gemini's safety approve/deny
-- a hover menu, and a secret that never reaches disk
+The tests drive the real recorder and replayer against a local "legacy" site in `tests/site/`: table layouts, no ids,
+per-row buttons, late-loading values, a cookie session, a dropdown and a hover menu. Scripted stand-ins play the AI's
+part. They cover every outcome class, the `--ai` decisions being remembered, a human takeover, Gemini's safety
+approve/deny, the approval gate, and a secret that never reaches disk. No test calls the real model.
 
-No test calls the real model.
+To regenerate `evidence/` against the live sites: `./scripts/make_evidence.sh`.
 
 ## Options you rarely need
 
-| Flag | On | Meaning |
-|------|----|---------|
+| Flag | Command | Meaning |
+|------|---------|---------|
 | `--name` | record | capability name (default: suggested by the model) |
-| `--allow DOMAIN` | record | also allow another site, e.g. an SSO login domain (repeatable). The default allows only the start site and its subdomains |
-| `--model` | record | Gemini model for recording (default `gemini-3.8-flash`) |
+| `--allow DOMAIN` | record | also allow another domain, e.g. an SSO login (repeatable). By default only the start site and its subdomains are allowed |
+| `--model` | record | Gemini model (default `gemini-3.8-flash`) |
 | `--max-steps` | record | model turn budget (default 40) |
-| `--version N` | run, show | a specific version (default: latest) |
-| `--ai` | run | let the AI handle the unexpected (a new screen, a moved element) instead of a person; remembered for next time |
+| `--version N` | run, show | use a specific version (default: latest) |
+| `--ai` | run | let the AI handle a new screen or a moved element instead of a person |
 | `--inject FAULT@STEP` | run | simulate `slow`, `http500`, `expire_session` or `modal` before a step (repeatable) |
-| `--json` | run | print the full result contract (for agents), including every `ai_decisions` entry |
-| `--headless` | record, run | no visible browser, so nobody is asked: anything needing a person fails with evidence instead |
+| `--json` | run | print the full result contract, for other programs and agents |
+| `--headless` | record, run | no visible browser, so nobody can be asked: what needs a person fails with evidence |
 
-Exit codes for `run`: `0` success or business outcome, `2` needs confirmation, `1` failure.
+`cua run` exits with `0` for success or a business outcome, `2` for needs confirmation, and `1` for failure.
 
-## What's where
+## Project layout
 
 ```
 cua/cli.py         the five commands
-cua/agent.py       recording: the Gemini loop, the recorder (pixels → verified locators), applying the AI's plan and review
-cua/replay.py      replay: plain code; unexpected screens go to a person, or to the AI with --ai
-cua/assist.py      the AI's other decisions: goal inputs, review, unexpected screens, moved elements
-cua/artifact.py    the capability schema (Pydantic) and versioned YAML storage
-cua/surface.py     the perceive/act seam (WebSurface = Playwright)
-cua/grounding.js   in-page: point → element → locator ladder; the control bar; human-action capture
-cua/handoff.py     who is in control; escalation and hand-back
-cua/policy.py      allowlist, redaction
-cua/evidence.py    runs/<id>/ log, screenshots, result
-artifacts/         capabilities: one YAML per version (commit these)
+cua/agent.py       recording: the Gemini loop and the recorder (pixels → verified locators)
+cua/assist.py      the AI's other decisions: goal inputs, review, new screens, moved elements
+cua/replay.py      replay: plain code; new screens go to a person, or to the AI with --ai
+cua/artifact.py    the capability file schema (Pydantic) and versioned YAML storage
+cua/surface.py     the browser seam (WebSurface = Playwright)
+cua/grounding.js   in the page: point → element → locators, the control bar, capturing human actions
+cua/handoff.py     who is in control: escalation and hand-back
+cua/policy.py      allowlist and redaction
+cua/evidence.py    per-run log, screenshots and result
+artifacts/         capability files, one YAML per version (commit these)
 runs/              per-run evidence (git-ignored)
 ```
