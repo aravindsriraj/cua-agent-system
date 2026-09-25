@@ -484,3 +484,31 @@ def test_recording_stops_at_its_time_limit(server):
     agent.genai.Client = lambda: FakeModel(rec)
     assert asyncio.run(rec.run(timeout=0)) is None
     assert "time limit" in rec.stop_reason and not A.versions("slow")
+
+
+def test_nobody_answering_fails_with_evidence_instead_of_waiting_forever(recorded):
+    async def go():
+        rp = Replayer(fresh(recorded), PARAMS, headless=True, human=True, inject=["modal@s5"])
+        rp.ctl.patience = 0.5  # nobody is watching the bar
+        return await asyncio.wait_for(rp.run(), 30)
+
+    r = asyncio.run(go())
+    assert (r.status, r.code) == ("failed", "UNKNOWN_STATE") and "nobody answered" in r.message
+
+
+def test_a_person_who_took_over_is_never_cut_off(recorded):
+    async def go():
+        rp = Replayer(fresh(recorded), PARAMS, headless=True, human=True, inject=["modal@s5"])
+        rp.ctl.patience = 1.0
+
+        async def operator():
+            await until(lambda: rp.ctl.state == "awaiting_human")
+            await rp.surface.page.evaluate("() => window.__cua_ui('take_over', {})")
+            await asyncio.sleep(2)  # working longer than the patience
+            await rp.surface.page.click("text=OK")
+            await rp.surface.page.evaluate("() => setTimeout(() => window.__cua_ui('hand_back', {}), 0)")
+
+        r, _ = await asyncio.gather(rp.run(), operator())
+        return r
+
+    assert asyncio.run(go()).status == "success"

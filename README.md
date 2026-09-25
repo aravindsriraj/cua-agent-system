@@ -158,7 +158,7 @@ People decide approvals, CAPTCHAs (never solved automatically), and new screens 
 | The requested record doesn't exist (account 99999) | returns `business_outcome NOT_FOUND` | code |
 | A risky step on a draft capability | stops before it: `needs_confirmation`, nothing submitted | code |
 | Anything new (e.g. the first "wrong password" error) | a person takes over the same browser and labels the screen, or the AI decides with `--ai`; saved as the next version | person or AI |
-| Anything new, nobody watching (`--headless`) | `failed UNKNOWN_STATE`, with a screenshot and a page snapshot | code |
+| Anything new, nobody watching (`--headless`, or no answer within 5 minutes) | `failed UNKNOWN_STATE`, with a screenshot and a page snapshot | code |
 
 Every run writes `runs/<id>/`: a redacted event log, screenshots, and `result.json`.
 
@@ -174,7 +174,7 @@ Every run writes `runs/<id>/`: a redacted event log, screenshots, and `result.js
 ## Tests (no network, no API key)
 
 ```bash
-uv run pytest     # 31 tests, a few minutes
+uv run pytest     # 33 tests, a few minutes
 ```
 
 The tests drive the real recorder and replayer against a local "legacy" site in `tests/site/`: table layouts, no ids,

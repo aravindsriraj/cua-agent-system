@@ -136,7 +136,9 @@ A recording also stops cleanly, saving nothing, when it runs out of model turns 
 
 **Routing.** Each escalation writes `intervention.json` (capability or goal, step, reason, expected vs observed,
 screenshot), rings the terminal bell and turns the in-page bar red. That file is where a queue, Slack or a pager would
-plug in; here it is mocked.
+plug in; here it is mocked. If nobody answers within 5 minutes, the request counts as unanswered: a replay fails with
+evidence (`UNKNOWN_STATE`, "nobody answered"), and a recording carries on or stops cleanly. Once a person clicks
+**Take over**, there is no time limit.
 
 **Control transfer.** A `Controller` gives the live session exactly one owner at a time:
 
@@ -148,7 +150,7 @@ stateDiagram-v2
     Human: person in control
     [*] --> Agent
     Agent --> Waiting: stuck, risky or unknown screen
-    Waiting --> Agent: Approve / Deny / label
+    Waiting --> Agent: Approve / Deny / label / no answer in 5 min
     Agent --> Human: Take over
     Waiting --> Human: Take over
     Human --> Agent: Hand back / label
@@ -184,6 +186,13 @@ Approval is a gate, not a block, because "reach the confirmation screen" is a le
 - Gemini's safety acknowledgement only works as a plain-object result. The documented text+image form returns HTTP 400
   (verified live).
 - The allowlist covers where the tab goes, not a page's own requests or iframes (ads, video, payments).
+- **Browser confirm dialogs.** Native `confirm()` and `alert()` dialogs are always dismissed, so nothing is ever
+  auto-confirmed, but a flow that needs **OK** there cannot run. *Design:* record the dialog as its own step, marked
+  risky, and accept it only under the approval gate; any other dialog is still dismissed.
+- **A risky action repeated across runs.** "Never repeat a risky step" holds within one run. A caller that retries after
+  a crash or a lost result could submit a transfer twice. *Design:* the caller passes an idempotency key, and replay
+  writes it to a ledger just before a risky step. A key already in the ledger returns the stored result; if the earlier
+  run died mid-step, replay stops with `needs_confirmation` so a person checks the app first.
 
 ## 7. Cuts
 
@@ -199,6 +208,14 @@ Approval is a gate, not a block, because "reach the confirmation screen" is a le
 - an MCP catalogue (`cua run --json` is the machine contract today)
 - flakiness scoring
 - masking personal data on screen before it is sent to the model
+
+**Known gaps, with the design answer:**
+- **MFA and one-time codes.** Only a person can type a code today, so apps with MFA cannot replay unattended.
+  *Design:* a `{code:otp}` input generated at the keyboard from a TOTP secret in a vault (never seen by the model, like
+  other secrets), and reusing a logged-in session while it is valid, so login and MFA happen once per session, not per run.
+- **A pop-up tab that closes itself** (e.g. an SSO login window). Replay follows new tabs but never goes back, so it is
+  left on a closed tab. *Design:* when the active tab closes, return to the tab that opened it (Playwright's
+  `page.opener()`), and record tab switches as steps.
 
 **Next, in order:**
 1. an MCP server over `cua list` and `cua run --json`

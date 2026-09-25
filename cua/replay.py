@@ -343,8 +343,8 @@ class Replayer:
                                     expected=expected, observed={k: obs[k] for k in ("url", "heading", "text")},
                                     screenshot=await self.shot(f"{step.id}-stuck"))
         if d["decision"] == "unavailable":
-            raise Stop("failed", code="UNKNOWN_STATE", failed_step=step.id, message=why + note, expected=expected,
-                       observed={k: obs[k] for k in ("url", "heading", "text", "dialogs", "http_status")})
+            raise Stop("failed", code="UNKNOWN_STATE", failed_step=step.id, message=why + note + d.get("note", ""),
+                       expected=expected, observed={k: obs[k] for k in ("url", "heading", "text", "dialogs", "http_status")})
         if d["decision"] == "label":
             return await self.learn(d, i, step)
         if step.expect and await self.surface.check(step.expect, self.params, timeout=2):

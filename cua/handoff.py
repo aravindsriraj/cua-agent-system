@@ -3,6 +3,7 @@
     agent/running --escalate--> agent/awaiting_human --Take over--> human/human_active --Hand back / Label--> agent/running
                   \\------------------------------ Take over (any time) ----------------------------------/
 Automation calls `checkpoint()` before every action, so it can never act while a human holds control.
+Nobody answering a request within `patience` counts as no human available; a person who took over is never cut off.
 """
 from __future__ import annotations
 
@@ -12,6 +13,8 @@ from .evidence import RunLog
 
 
 class Controller:
+    patience = 300.0  # seconds to wait for someone to answer a request
+
     def __init__(self, surface, log: RunLog, human_available: bool, can_label: bool = False):
         self.surface, self.log = surface, log
         self.human_available = human_available
@@ -63,10 +66,17 @@ class Controller:
         self.ask, self.message = ask, reason
         await self._set("agent", "awaiting_human", reason)
         try:
-            return await self._wait()
+            return await self._wait(self.patience)
         finally:
             self.ask = None
 
-    async def _wait(self) -> dict:
+    async def _wait(self, patience: float | None = None) -> dict:
         self._decision = asyncio.get_running_loop().create_future()
-        return await self._decision
+        try:
+            return await asyncio.wait_for(asyncio.shield(self._decision), patience)
+        except TimeoutError:
+            if self.owner == "human":  # someone took over: wait for them to hand back
+                return await self._decision
+            self.ask, self.message = None, ""
+            await self._set("agent", "running", f"nobody answered within {patience:g}s")
+            return {"decision": "unavailable", "note": f" (nobody answered within {patience:g}s)"}
