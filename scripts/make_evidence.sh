@@ -10,40 +10,41 @@ run() { echo "\$ $*" >> $T; "$@" >> $T 2>&1; echo "(exit $?)" >> $T; echo >> $T;
 names() { uv run python -c "import sys; from cua import artifact as A
 print(' '.join(k for k, v in A.load(sys.argv[1]).inputs.items() if v.type != 'secret'))" "$1"; }
 C=parabank-account-balance
+read A1 A2 _ <<< "$(uv run python scripts/parabank_accounts.py)"   # john's accounts change when ParaBank resets
 
 # 1. Discovery: the AI reads the plain-English goal, drives the browser, and reviews the recording.
 run uv run cua record https://parabank.parasoft.com/parabank/index.htm \
-  "Log in as john with {password:secret}, open account 12345 and read its balance" --name $C --headless
+  "Log in as john with {password:secret}, open account $A1 and read its balance" --name $C --headless
 run uv run cua show $C
 read UNAME ACCT <<< "$(names $C)"
 
 # 2. Replay (code only): success, another input, a record that does not exist, a missing input.
-for a in 12345 12456 99999; do run uv run cua run $C "$UNAME=john" "$ACCT=$a" --headless; done
+for a in $A1 $A2 99999; do run uv run cua run $C "$UNAME=john" "$ACCT=$a" --headless; done
 run uv run cua run $C "$UNAME=john" --headless
 
 # 3. Something new, with --ai: the AI decides once and it is remembered; the second time code handles it, no AI.
 for f in modal expire_session; do
-  run uv run cua run $C "$UNAME=john" "$ACCT=12345" --inject $f@s5 --ai --headless
-  run uv run cua run $C "$UNAME=john" "$ACCT=12345" --inject $f@s5 --headless
+  run uv run cua run $C "$UNAME=john" "$ACCT=$A1" --inject $f@s5 --ai --headless
+  run uv run cua run $C "$UNAME=john" "$ACCT=$A1" --inject $f@s5 --headless
 done
-run uv run cua run $C "$UNAME=john" "$ACCT=12345" --inject http500@s5 --headless     # code: retry
+run uv run cua run $C "$UNAME=john" "$ACCT=$A1" --inject http500@s5 --headless     # code: retry
 
 # 4. Default replay, no human: an unknown screen fails with evidence (v1 does not know the pop-up).
-run uv run cua run $C "$UNAME=john" "$ACCT=12345" --version 1 --inject modal@s5 --headless
+run uv run cua run $C "$UNAME=john" "$ACCT=$A1" --version 1 --inject modal@s5 --headless
 # 5. Default replay, a human takes over the same live session, closes the pop-up and labels it -> remembered.
 run uv run python scripts/operator_demo.py handoff
 # 5b. A validation error (the app rejects a wrong password): a person labels it a normal answer once; then code returns it.
 run uv run python scripts/operator_demo.py wrong_password
-run env PASSWORD=not-the-password uv run cua run $C "$UNAME=john" "$ACCT=12345" --headless
+run env PASSWORD=not-the-password uv run cua run $C "$UNAME=john" "$ACCT=$A1" --headless
 run uv run cua show $C
 
 # 6. Risky flow: recording pauses for approval; a draft will not transfer unattended; approved, it does.
 run uv run python scripts/operator_demo.py transfer
 run uv run cua show parabank-transfer
 read TUSER TAMT TFROM TTO <<< "$(names parabank-transfer)"
-run uv run cua run parabank-transfer "$TUSER=john" "$TAMT=1" "$TFROM=12345" "$TTO=12456" --headless
+run uv run cua run parabank-transfer "$TUSER=john" "$TAMT=1" "$TFROM=$A1" "$TTO=$A2" --headless
 run uv run cua approve parabank-transfer --by reviewer
-run uv run cua run parabank-transfer "$TUSER=john" "$TAMT=1" "$TFROM=12345" "$TTO=12456" --headless
+run uv run cua run parabank-transfer "$TUSER=john" "$TAMT=1" "$TFROM=$A1" "$TTO=$A2" --headless
 
 # 7. Not just banks: the same system on an unrelated web app (SauceDemo shop).
 S=saucedemo-checkout

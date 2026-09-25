@@ -15,6 +15,7 @@ from cua import artifact as A
 from cua.agent import MODEL, Recorder
 from cua.cli import load_dotenv
 from cua.replay import Replayer
+from parabank_accounts import accounts  # john's current accounts (they change when ParaBank resets)
 
 load_dotenv()
 PASSWORD = os.environ["PASSWORD"]
@@ -29,7 +30,7 @@ async def replay_with_operator(version: int | None, password: str, label: str, i
     """Default replay (no AI). When it asks for a person, the operator takes over, does `fix` if any, labels the screen."""
     art = A.load("parabank-account-balance", version=version)
     user, account = [k for k, v in art.inputs.items() if v.type != "secret"]  # the names the AI chose, in goal order
-    rp = Replayer(art, {user: "john", account: "12345", "password": password}, inject=inject, ai=False)
+    rp = Replayer(art, {user: "john", account: accounts()[0], "password": password}, inject=inject, ai=False)
 
     async def operator():
         while rp.ctl.state != "awaiting_human":
@@ -59,8 +60,9 @@ async def wrong_password() -> None:
 
 
 async def transfer() -> None:
+    a1, a2 = accounts()[:2]
     goal = ("Log in as john with {password:secret}, then use Transfer Funds to transfer 1 "
-            "from account 12345 to account 12456 and reach the transfer confirmation")
+            f"from account {a1} to account {a2} and reach the transfer confirmation")
     rec = Recorder("https://parabank.parasoft.com/parabank/index.htm", goal, MODEL, human=True, headless=False,
                    secrets={"password": PASSWORD}, name="parabank-transfer")
 

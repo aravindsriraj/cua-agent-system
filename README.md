@@ -67,7 +67,7 @@ cp .env.example .env        # then add your GEMINI_API_KEY
 `PASSWORD` for ParaBank's customer `john`, `SAUCE_PASSWORD` for SauceDemo.
 
 **No Gemini key?** Replay needs none. Copy the capabilities recorded for the evidence with
-`cp -R evidence/artifacts artifacts`, then skip to step 3 of Demo 1.
+`cp -R evidence/artifacts artifacts`, then run steps 0 and 3 of Demo 1.
 
 ## The five commands
 
@@ -87,14 +87,18 @@ value is read from `NAME` in `.env` (or asked for once), typed at the keyboard, 
 
 ## Demo 1: a bank (live ParaBank, about 3 minutes)
 
-[ParaBank](https://parabank.parasoft.com/parabank/) is a public demo bank. It wipes its data now and then, but its
-built-in customer `john` (password `demo`, accounts 12345, 12456, …) always comes back. If john is broken, register a
-customer on ParaBank's Register page and use that username and account number instead.
+[ParaBank](https://parabank.parasoft.com/parabank/) is a public demo bank. It wipes its data now and then. Its
+built-in customer `john` (password `demo`) always comes back, but his account numbers change, so step 0 looks up his
+current ones. If john is broken, register a customer on ParaBank's Register page and use that username and account
+number instead.
 
 ```bash
+# 0. Pick one of john's current accounts (they change when ParaBank resets).
+ACCT=$(uv run python scripts/parabank_accounts.py | cut -d' ' -f1); echo $ACCT
+
 # 1. Learn it. A browser opens; the bar at the bottom shows who is in control.
 uv run cua record https://parabank.parasoft.com/parabank/index.htm \
-  "Log in as john with {password:secret}, open account 12345 and read its balance" \
+  "Log in as john with {password:secret}, open account $ACCT and read its balance" \
   --name parabank-account-balance
 #   ✔ Learned 'parabank-account-balance' v1 (6 steps)
 #     AI read the goal: password (secret), username (string), account_number (string)
@@ -103,14 +107,14 @@ uv run cua record https://parabank.parasoft.com/parabank/index.htm \
 uv run cua show parabank-account-balance
 
 # 3. Replay it. Use the input names printed in step 1.
-uv run cua run parabank-account-balance username=john account_number=12345   # ✔ Success: balance: …
+uv run cua run parabank-account-balance username=john account_number=$ACCT    # ✔ Success: balance: …
 uv run cua run parabank-account-balance username=john account_number=99999   # ● NOT_FOUND: an answer, not a crash
 uv run cua run parabank-account-balance username=john                        # ✖ missing input, before any browser opens
 
 # 4. Break it on purpose to see how surprises are handled.
-uv run cua run parabank-account-balance username=john account_number=12345 --inject modal@s5               # asks you
-uv run cua run parabank-account-balance username=john account_number=12345 --inject expire_session@s5 --ai  # the AI decides
-uv run cua run parabank-account-balance username=john account_number=12345 --inject http500@s5             # code retries
+uv run cua run parabank-account-balance username=john account_number=$ACCT --inject modal@s5               # asks you
+uv run cua run parabank-account-balance username=john account_number=$ACCT --inject expire_session@s5 --ai  # the AI decides
+uv run cua run parabank-account-balance username=john account_number=$ACCT --inject http500@s5             # code retries
 ```
 
 When the injected pop-up appears, the bar turns red (**⚠️ Needs you**). Click **Take over**, close the pop-up, then
@@ -198,6 +202,7 @@ To regenerate `evidence/` against the live sites: `./scripts/make_evidence.sh`.
 | `--inject FAULT@STEP` | run | simulate `slow`, `http500`, `expire_session` or `modal` before a step (repeatable) |
 | `--json` | run | print the full result contract, for other programs and agents |
 | `--headless` | record, run | no visible browser, so nobody can be asked: what needs a person fails with evidence |
+| `--by NAME` | approve | the reviewer recorded in the history (default: your OS user) |
 
 `cua run` exits with `0` for success or a business outcome, `2` for needs confirmation, and `1` for failure.
 
