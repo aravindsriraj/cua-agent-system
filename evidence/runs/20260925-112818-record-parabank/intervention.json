@@ -1,0 +1,8 @@
+{
+  "reason": "Confirm risky action: The action involves clicking a button to finalize a financial transfer, which is an irreversible transaction requiring human oversight.",
+  "ask": "approval",
+  "run_id": "20260925-112818-record-parabank",
+  "goal": "Log in as {username} with {password}, then use Transfer Funds to transfer 1 from account {from_account} to account {to_account} and reach the transfer confirmation",
+  "step": "Click TRANSFER button",
+  "screenshot": "runs/20260925-112818-record-parabank/08-confirm.png"
+}

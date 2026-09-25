@@ -1,0 +1,22 @@
+{
+  "status": "success",
+  "capability": "parabank-transfer",
+  "version": 1,
+  "run_id": "20260925-113036-run-parabank-transfer",
+  "code": null,
+  "message": "",
+  "outputs": {},
+  "failed_step": null,
+  "expected": null,
+  "observed": null,
+  "recoveries": [],
+  "locator_fallbacks": [],
+  "ai_decisions": [],
+  "human_actions": [],
+  "learned": null,
+  "evidence": {
+    "run_dir": "runs/20260925-113036-run-parabank-transfer",
+    "log": "runs/\u2022\u2022\u2022\u20220925-\u2022\u20223036-run-parabank-transfer/log.jsonl"
+  },
+  "duration_s": 5.5
+}

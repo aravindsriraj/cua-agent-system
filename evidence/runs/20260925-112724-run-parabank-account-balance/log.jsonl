@@ -1,0 +1,26 @@
+{"ts": "2026-09-25T11:27:24.995", "event": "start", "capability": "parabank-account-balance", "version": 3, "ai": false, "inputs": {"username": "cua_demo_6955", "account_number": "\u20221437", "password": "[secret]"}}
+{"ts": "2026-09-25T11:27:25.202", "event": "step_start", "step": "s1", "intent": "Open the start page"}
+{"ts": "2026-09-25T11:27:27.963", "event": "step_ok", "step": "s1"}
+{"ts": "2026-09-25T11:27:27.965", "event": "step_start", "step": "s2", "intent": "Type the username"}
+{"ts": "2026-09-25T11:27:27.973", "event": "step_ok", "step": "s2"}
+{"ts": "2026-09-25T11:27:27.974", "event": "step_start", "step": "s3", "intent": "Type the password placeholder"}
+{"ts": "2026-09-25T11:27:27.987", "event": "step_ok", "step": "s3"}
+{"ts": "2026-09-25T11:27:27.988", "event": "step_start", "step": "s4", "intent": "Click Log In button"}
+{"ts": "2026-09-25T11:27:29.518", "event": "step_ok", "step": "s4"}
+{"ts": "2026-09-25T11:27:29.519", "event": "step_start", "step": "s5", "intent": "Click on account {{account_number}} to open it"}
+{"ts": "2026-09-25T11:27:29.519", "event": "fault_injected", "kind": "expire_session", "step": "s5"}
+{"ts": "2026-09-25T11:27:41.413", "event": "step_miss", "step": "s5", "why": "checkpoint not reached"}
+{"ts": "2026-09-25T11:27:41.416", "event": "outcome", "id": "user_login_required", "kind": "recoverable", "source": "ai", "step": "s5"}
+{"ts": "2026-09-25T11:27:41.417", "event": "step_start", "step": "s1", "intent": "Open the start page"}
+{"ts": "2026-09-25T11:27:43.052", "event": "step_ok", "step": "s1"}
+{"ts": "2026-09-25T11:27:43.053", "event": "step_start", "step": "s2", "intent": "Type the username"}
+{"ts": "2026-09-25T11:27:43.059", "event": "step_ok", "step": "s2"}
+{"ts": "2026-09-25T11:27:43.059", "event": "step_start", "step": "s3", "intent": "Type the password placeholder"}
+{"ts": "2026-09-25T11:27:43.063", "event": "step_ok", "step": "s3"}
+{"ts": "2026-09-25T11:27:43.063", "event": "step_start", "step": "s4", "intent": "Click Log In button"}
+{"ts": "2026-09-25T11:27:44.557", "event": "step_ok", "step": "s4"}
+{"ts": "2026-09-25T11:27:44.558", "event": "step_start", "step": "s5", "intent": "Click on account {{account_number}} to open it"}
+{"ts": "2026-09-25T11:27:45.874", "event": "step_ok", "step": "s5"}
+{"ts": "2026-09-25T11:27:45.875", "event": "step_start", "step": "s6", "intent": "Read balance: Balance of account {{account_number}}"}
+{"ts": "2026-09-25T11:27:45.881", "event": "step_ok", "step": "s6"}
+{"ts": "2026-09-25T11:27:45.883", "event": "result", "status": "success", "code": null}

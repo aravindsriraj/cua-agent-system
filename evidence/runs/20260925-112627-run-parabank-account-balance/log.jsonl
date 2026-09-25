@@ -1,0 +1,12 @@
+{"ts": "2026-09-25T11:26:27.830", "event": "start", "capability": "parabank-account-balance", "version": 1, "ai": false, "inputs": {"username": "cua_demo_6955", "account_number": "\u20229999", "password": "[secret]"}}
+{"ts": "2026-09-25T11:26:28.038", "event": "step_start", "step": "s1", "intent": "Open the start page"}
+{"ts": "2026-09-25T11:26:30.281", "event": "step_ok", "step": "s1"}
+{"ts": "2026-09-25T11:26:30.282", "event": "step_start", "step": "s2", "intent": "Type the username"}
+{"ts": "2026-09-25T11:26:30.286", "event": "step_ok", "step": "s2"}
+{"ts": "2026-09-25T11:26:30.287", "event": "step_start", "step": "s3", "intent": "Type the password placeholder"}
+{"ts": "2026-09-25T11:26:30.298", "event": "step_ok", "step": "s3"}
+{"ts": "2026-09-25T11:26:30.299", "event": "step_start", "step": "s4", "intent": "Click Log In button"}
+{"ts": "2026-09-25T11:26:31.479", "event": "step_ok", "step": "s4"}
+{"ts": "2026-09-25T11:26:31.480", "event": "step_start", "step": "s5", "intent": "Click on account {{account_number}} to open it"}
+{"ts": "2026-09-25T11:26:34.531", "event": "step_miss", "step": "s5", "why": "could not find link \"\u20229999\""}
+{"ts": "2026-09-25T11:26:34.567", "event": "result", "status": "business_outcome", "code": "NOT_FOUND"}

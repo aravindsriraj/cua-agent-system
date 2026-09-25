@@ -1,0 +1,16 @@
+{"ts": "2026-09-25T11:26:51.092", "event": "start", "capability": "parabank-account-balance", "version": 2, "ai": false, "inputs": {"username": "cua_demo_6955", "account_number": "\u20221437", "password": "[secret]"}}
+{"ts": "2026-09-25T11:26:51.303", "event": "step_start", "step": "s1", "intent": "Open the start page"}
+{"ts": "2026-09-25T11:26:53.819", "event": "step_ok", "step": "s1"}
+{"ts": "2026-09-25T11:26:53.820", "event": "step_start", "step": "s2", "intent": "Type the username"}
+{"ts": "2026-09-25T11:26:53.827", "event": "step_ok", "step": "s2"}
+{"ts": "2026-09-25T11:26:53.828", "event": "step_start", "step": "s3", "intent": "Type the password placeholder"}
+{"ts": "2026-09-25T11:26:53.841", "event": "step_ok", "step": "s3"}
+{"ts": "2026-09-25T11:26:53.842", "event": "step_start", "step": "s4", "intent": "Click Log In button"}
+{"ts": "2026-09-25T11:26:55.411", "event": "step_ok", "step": "s4"}
+{"ts": "2026-09-25T11:26:55.413", "event": "step_start", "step": "s5", "intent": "Click on account {{account_number}} to open it"}
+{"ts": "2026-09-25T11:26:55.413", "event": "fault_injected", "kind": "modal", "step": "s5"}
+{"ts": "2026-09-25T11:26:55.945", "event": "recovered", "outcome": "system_notice_modal"}
+{"ts": "2026-09-25T11:26:57.099", "event": "step_ok", "step": "s5"}
+{"ts": "2026-09-25T11:26:57.100", "event": "step_start", "step": "s6", "intent": "Read balance: Balance of account {{account_number}}"}
+{"ts": "2026-09-25T11:26:57.106", "event": "step_ok", "step": "s6"}
+{"ts": "2026-09-25T11:26:57.107", "event": "result", "status": "success", "code": null}

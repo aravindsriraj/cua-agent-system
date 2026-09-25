@@ -1,0 +1,183 @@
+schema_version: 1
+capability:
+  id: parabank-transfer
+  version: 1
+  status: approved
+  description: Log in as {username} with {password}, then use Transfer Funds to transfer 1 from account {from_account} to
+    account {to_account} and reach the transfer confirmation
+  start_url: https://parabank.parasoft.com/parabank/index.htm
+  surface: web
+inputs:
+  password:
+    type: secret
+    description: 'Secret: read from the environment, never stored'
+  username:
+    type: string
+    description: The username to log in with
+  amount:
+    type: number
+    description: The amount of funds to transfer
+  from_account:
+    type: string
+    description: The source account number to transfer funds from
+  to_account:
+    type: string
+    description: The destination account number to transfer funds to
+policy:
+  allowed_domains:
+  - parabank.parasoft.com
+  allowed_actions:
+  - navigate
+  - click
+  - double_click
+  - hover
+  - type
+  - select
+  - press_key
+  - go_back
+  - extract
+steps:
+- id: s1
+  intent: Open the start page
+  action: navigate
+  value: https://parabank.parasoft.com/parabank/index.htm
+  expect:
+    url_contains: /parabank/index.htm
+    text_visible: Customer Login
+- id: s2
+  intent: Type username {{username}}
+  action: type
+  target:
+    description: textbox "Username"
+    locators:
+    - by: near_text
+      value: Username
+      tag: input
+    - by: css
+      value: input[name="username"]
+    - by: css
+      value: '#loginPanel > form:nth-of-type(1) > div:nth-of-type(1) > input:nth-of-type(1)'
+  value: '{{username}}'
+- id: s3
+  intent: Type secret password
+  action: type
+  target:
+    description: input "Password"
+    locators:
+    - by: near_text
+      value: Password
+      tag: input
+    - by: css
+      value: input[name="password"]
+    - by: css
+      value: '#loginPanel > form:nth-of-type(1) > div:nth-of-type(2) > input:nth-of-type(1)'
+  value: '{{secret:password}}'
+- id: s4
+  intent: Click Log In button
+  action: click
+  target:
+    description: button "Log In"
+    locators:
+    - by: role
+      value: Log In
+      role: button
+    - by: css
+      value: '#loginPanel > form:nth-of-type(1) > div:nth-of-type(3) > input:nth-of-type(1)'
+  expect:
+    url_contains: /parabank/overview.htm
+    text_visible: Accounts Overview
+- id: s5
+  intent: Click Transfer Funds
+  action: click
+  target:
+    description: link "Transfer Funds"
+    locators:
+    - by: role
+      value: Transfer Funds
+      role: link
+    - by: text
+      value: Transfer Funds
+    - by: css
+      value: '#leftPanel > ul:nth-of-type(1) > li:nth-of-type(3) > a:nth-of-type(1)'
+  expect:
+    url_contains: /parabank/transfer.htm
+    text_visible: 'Amount:'
+- id: s6
+  intent: Type 1 in Amount
+  action: type
+  target:
+    description: textbox "$" in the row for "{{from_account}}"
+    locators:
+    - by: row
+      value: '{{from_account}}'
+      tag: div
+      inner:
+        by: css
+        value: input[name="input"]
+  value: '{{amount}}'
+- id: s7
+  intent: 'Choose {{from_account}} in combobox "From account #" in the row for "{{from_account}}"'
+  action: select
+  target:
+    description: 'combobox "From account #" in the row for "{{from_account}}"'
+    locators:
+    - by: row
+      value: '{{from_account}}'
+      tag: div
+      inner:
+        by: css
+        value: '#fromAccountId'
+  value: '{{from_account}}'
+- id: s8
+  intent: 'Choose {{to_account}} in combobox "to account #" in the row for "{{from_account}}"'
+  action: select
+  target:
+    description: 'combobox "to account #" in the row for "{{from_account}}"'
+    locators:
+    - by: row
+      value: '{{from_account}}'
+      tag: div
+      inner:
+        by: css
+        value: '#toAccountId'
+  value: '{{to_account}}'
+- id: s9
+  intent: Click TRANSFER button
+  action: click
+  target:
+    description: button "Transfer"
+    locators:
+    - by: role
+      value: Transfer
+      role: button
+    - by: near_text
+      value: 'to account #'
+      tag: input
+    - by: css
+      value: '#transferForm > div:nth-of-type(2) > input:nth-of-type(1)'
+  risk: risky
+  risk_reason: 'AI review: Submits a fund transfer between accounts, executing a financial transaction.'
+  expect:
+    url_contains: /parabank/transfer.htm
+    text_visible: Transfer Complete!
+success:
+- url_contains: /parabank/transfer.htm
+  text_visible: Transfer Complete!
+provenance:
+  recorded_at: '2026-09-25T06:00:25+00:00'
+  model: gemini-3.8-flash
+  discovery_run: 20260925-112818-record-parabank
+  history:
+  - version: 1
+    change: recorded from goal (run 20260925-112818-record-parabank)
+    by: model:gemini-3.8-flash
+    at: '2026-09-25T06:00:25+00:00'
+  - version: 1
+    change: 'AI review: checkpoints on 4 steps; success: url_contains ''/parabank/transfer.htm'' and text_visible ''Transfer
+      Complete!''; s9 is risky: Submits a fund transfer between accounts, executing a financial transaction.'
+    by: model:gemini-3.8-flash
+    at: '2026-09-25T06:00:31+00:00'
+  - version: 1
+    change: approved for unattended runs
+    by: reviewer
+    at: '2026-09-25T06:00:36+00:00'

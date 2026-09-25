@@ -1,0 +1,130 @@
+- link:
+  - /url: admin.htm
+  - img
+- link "ParaBank":
+  - /url: index.htm
+  - img "ParaBank"
+- paragraph: Experience the difference
+- list:
+  - listitem: Solutions
+  - listitem:
+    - link "About Us":
+      - /url: about.htm
+  - listitem:
+    - link "Services":
+      - /url: services.htm
+  - listitem:
+    - link "Products":
+      - /url: http://www.parasoft.com/jsp/products.jsp
+  - listitem:
+    - link "Locations":
+      - /url: http://www.parasoft.com/jsp/pr/contacts.jsp
+  - listitem:
+    - link "Admin Page":
+      - /url: admin.htm
+- list:
+  - listitem:
+    - link "home":
+      - /url: index.htm
+  - listitem:
+    - link "about":
+      - /url: about.htm
+  - listitem:
+    - link "contact":
+      - /url: contact.htm
+- paragraph: Welcome Demo Tester
+- heading "Account Services" [level=2]
+- list:
+  - listitem:
+    - link "Open New Account":
+      - /url: openaccount.htm
+  - listitem:
+    - link "Accounts Overview":
+      - /url: overview.htm
+  - listitem:
+    - link "Transfer Funds":
+      - /url: transfer.htm
+  - listitem:
+    - link "Bill Pay":
+      - /url: billpay.htm
+  - listitem:
+    - link "Find Transactions":
+      - /url: findtrans.htm
+  - listitem:
+    - link "Update Contact Info":
+      - /url: updateprofile.htm
+  - listitem:
+    - link "Request Loan":
+      - /url: requestloan.htm
+  - listitem:
+    - link "Log Out":
+      - /url: logout.htm
+- heading "Accounts Overview" [level=1]
+- table:
+  - rowgroup:
+    - row "Account Balance* Available Amount":
+      - columnheader "Account"
+      - columnheader "Balance*"
+      - columnheader "Available Amount"
+  - rowgroup:
+    - row "•1437 $415.50 $415.50":
+      - cell "•1437":
+        - link "•1437":
+          - /url: activity.htm?id=•1437
+      - cell "$415.50"
+      - cell "$415.50"
+    - row "•1770 $100.00 $100.00":
+      - cell "•1770":
+        - link "•1770":
+          - /url: activity.htm?id=•1770
+      - cell "$100.00"
+      - cell "$100.00"
+    - row "Total $515.50":
+      - cell "Total"
+      - cell "$515.50"
+      - cell
+  - rowgroup:
+    - row "*Balance includes deposits that may be subject to holds":
+      - cell "*Balance includes deposits that may be subject to holds"
+- list:
+  - listitem:
+    - link "Home":
+      - /url: index.htm
+    - text: "|"
+  - listitem:
+    - link "About Us":
+      - /url: about.htm
+    - text: "|"
+  - listitem:
+    - link "Services":
+      - /url: services.htm
+    - text: "|"
+  - listitem:
+    - link "Products":
+      - /url: http://www.parasoft.com/jsp/products.jsp
+    - text: "|"
+  - listitem:
+    - link "Locations":
+      - /url: http://www.parasoft.com/jsp/pr/contacts.jsp
+    - text: "|"
+  - listitem:
+    - link "Forum":
+      - /url: http://forums.parasoft.com/
+    - text: "|"
+  - listitem:
+    - link "Site Map":
+      - /url: sitemap.htm
+    - text: "|"
+  - listitem:
+    - link "Contact Us":
+      - /url: contact.htm
+- paragraph: © Parasoft. All rights reserved.
+- list:
+  - listitem: "Visit us at:"
+  - listitem:
+    - link "www.parasoft.com":
+      - /url: http://www.parasoft.com/
+- dialog:
+  - heading "System notice" [level=2]
+  - paragraph: Scheduled maintenance tonight at 11 PM.
+  - button "OK"

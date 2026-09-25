@@ -1,0 +1,8 @@
+{
+  "reason": "Approve risky step: Click TRANSFER button",
+  "ask": "approval",
+  "run_id": "20260925-113031-run-parabank-transfer",
+  "capability": "parabank-transfer",
+  "step": "s9",
+  "screenshot": "runs/20260925-113031-run-parabank-transfer/01-s9-approve.png"
+}

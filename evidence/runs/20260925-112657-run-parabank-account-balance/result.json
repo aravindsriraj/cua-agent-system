@@ -1,0 +1,28 @@
+{
+  "status": "success",
+  "capability": "parabank-account-balance",
+  "version": 3,
+  "run_id": "20260925-112657-run-parabank-account-balance",
+  "code": null,
+  "message": "",
+  "outputs": {
+    "balance": 415.5
+  },
+  "failed_step": null,
+  "expected": null,
+  "observed": null,
+  "recoveries": [
+    "user_login_required -> start over"
+  ],
+  "locator_fallbacks": [],
+  "ai_decisions": [
+    "s5: restart USER_LOGIN_REQUIRED: The user session has expired or logged out, requiring the automation to log in again."
+  ],
+  "human_actions": [],
+  "learned": "artifacts/parabank-account-balance/v3.yaml",
+  "evidence": {
+    "run_dir": "runs/20260925-112657-run-parabank-account-balance",
+    "log": "runs/\u2022\u2022\u2022\u20220925-\u2022\u20222657-run-parabank-account-balance/log.jsonl"
+  },
+  "duration_s": 27.4
+}

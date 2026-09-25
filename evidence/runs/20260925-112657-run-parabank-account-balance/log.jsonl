@@ -1,0 +1,28 @@
+{"ts": "2026-09-25T11:26:57.334", "event": "start", "capability": "parabank-account-balance", "version": 2, "ai": true, "inputs": {"username": "cua_demo_6955", "account_number": "\u20221437", "password": "[secret]"}}
+{"ts": "2026-09-25T11:26:57.541", "event": "step_start", "step": "s1", "intent": "Open the start page"}
+{"ts": "2026-09-25T11:26:59.822", "event": "step_ok", "step": "s1"}
+{"ts": "2026-09-25T11:26:59.823", "event": "step_start", "step": "s2", "intent": "Type the username"}
+{"ts": "2026-09-25T11:26:59.830", "event": "step_ok", "step": "s2"}
+{"ts": "2026-09-25T11:26:59.831", "event": "step_start", "step": "s3", "intent": "Type the password placeholder"}
+{"ts": "2026-09-25T11:26:59.844", "event": "step_ok", "step": "s3"}
+{"ts": "2026-09-25T11:26:59.844", "event": "step_start", "step": "s4", "intent": "Click Log In button"}
+{"ts": "2026-09-25T11:27:01.272", "event": "step_ok", "step": "s4"}
+{"ts": "2026-09-25T11:27:01.273", "event": "step_start", "step": "s5", "intent": "Click on account {{account_number}} to open it"}
+{"ts": "2026-09-25T11:27:01.273", "event": "fault_injected", "kind": "expire_session", "step": "s5"}
+{"ts": "2026-09-25T11:27:13.029", "event": "step_miss", "step": "s5", "why": "checkpoint not reached"}
+{"ts": "2026-09-25T11:27:20.316", "event": "ai_decision", "step": "s5", "decision": {"kind": "restart", "code": "USER_LOGIN_REQUIRED", "text": "Server returned 401: {\"message\":\"User login required\",\"status\":401}", "reason": "The user session has expired or logged out, requiring the automation to log in again.", "x": 0, "y": 0}}
+{"ts": "2026-09-25T11:27:20.317", "event": "learned", "outcome": {"id": "user_login_required", "kind": "recoverable", "when": {"text_visible": "Server returned 401: {\"message\":\"User login required\",\"status\":401}"}, "message": "Server returned 401: {\"message\":\"User login required\",\"status\":401}", "recover": {"action": "restart"}, "source": "ai"}, "by": "model:gemini-3.8-flash"}
+{"ts": "2026-09-25T11:27:20.317", "event": "outcome", "id": "user_login_required", "kind": "recoverable", "source": "ai", "step": "s5"}
+{"ts": "2026-09-25T11:27:20.318", "event": "step_start", "step": "s1", "intent": "Open the start page"}
+{"ts": "2026-09-25T11:27:22.081", "event": "step_ok", "step": "s1"}
+{"ts": "2026-09-25T11:27:22.082", "event": "step_start", "step": "s2", "intent": "Type the username"}
+{"ts": "2026-09-25T11:27:22.085", "event": "step_ok", "step": "s2"}
+{"ts": "2026-09-25T11:27:22.086", "event": "step_start", "step": "s3", "intent": "Type the password placeholder"}
+{"ts": "2026-09-25T11:27:22.090", "event": "step_ok", "step": "s3"}
+{"ts": "2026-09-25T11:27:22.090", "event": "step_start", "step": "s4", "intent": "Click Log In button"}
+{"ts": "2026-09-25T11:27:23.502", "event": "step_ok", "step": "s4"}
+{"ts": "2026-09-25T11:27:23.503", "event": "step_start", "step": "s5", "intent": "Click on account {{account_number}} to open it"}
+{"ts": "2026-09-25T11:27:24.745", "event": "step_ok", "step": "s5"}
+{"ts": "2026-09-25T11:27:24.746", "event": "step_start", "step": "s6", "intent": "Read balance: Balance of account {{account_number}}"}
+{"ts": "2026-09-25T11:27:24.753", "event": "step_ok", "step": "s6"}
+{"ts": "2026-09-25T11:27:24.756", "event": "result", "status": "success", "code": null}

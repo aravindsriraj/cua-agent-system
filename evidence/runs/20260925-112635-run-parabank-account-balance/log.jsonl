@@ -1,0 +1,19 @@
+{"ts": "2026-09-25T11:26:35.002", "event": "start", "capability": "parabank-account-balance", "version": 1, "ai": true, "inputs": {"username": "cua_demo_6955", "account_number": "\u20221437", "password": "[secret]"}}
+{"ts": "2026-09-25T11:26:35.211", "event": "step_start", "step": "s1", "intent": "Open the start page"}
+{"ts": "2026-09-25T11:26:37.123", "event": "step_ok", "step": "s1"}
+{"ts": "2026-09-25T11:26:37.125", "event": "step_start", "step": "s2", "intent": "Type the username"}
+{"ts": "2026-09-25T11:26:37.129", "event": "step_ok", "step": "s2"}
+{"ts": "2026-09-25T11:26:37.129", "event": "step_start", "step": "s3", "intent": "Type the password placeholder"}
+{"ts": "2026-09-25T11:26:37.141", "event": "step_ok", "step": "s3"}
+{"ts": "2026-09-25T11:26:37.142", "event": "step_start", "step": "s4", "intent": "Click Log In button"}
+{"ts": "2026-09-25T11:26:38.248", "event": "step_ok", "step": "s4"}
+{"ts": "2026-09-25T11:26:38.249", "event": "step_start", "step": "s5", "intent": "Click on account {{account_number}} to open it"}
+{"ts": "2026-09-25T11:26:38.249", "event": "fault_injected", "kind": "modal", "step": "s5"}
+{"ts": "2026-09-25T11:26:43.256", "event": "step_miss", "step": "s5", "why": "could not click: it did not respond (something may be covering it, or it is disabled)"}
+{"ts": "2026-09-25T11:26:49.463", "event": "ai_decision", "step": "s5", "decision": {"kind": "dismiss", "code": "SYSTEM_NOTICE_MODAL", "text": "System notice", "reason": "A scheduled maintenance notice popup is blocking interaction with the page and must be dismissed by clicking OK.", "x": 398, "y": 530}}
+{"ts": "2026-09-25T11:26:50.005", "event": "learned", "outcome": {"id": "system_notice_modal", "kind": "recoverable", "when": {"text_visible": "System notice"}, "message": "System notice", "recover": {"action": "dismiss", "target": {"description": "button \"OK\"", "frames": [], "locators": [{"by": "role", "value": "OK", "role": "button"}, {"by": "text", "value": "OK"}, {"by": "near_text", "value": "Scheduled maintenance tonight at 11 PM.", "tag": "button"}, {"by": "css", "value": "#cua-fault-modal > div:nth-of-type(1) > button:nth-of-type(1)"}]}}, "source": "ai"}, "by": "model:gemini-3.8-flash"}
+{"ts": "2026-09-25T11:26:50.007", "event": "step_start", "step": "s5", "intent": "Click on account {{account_number}} to open it"}
+{"ts": "2026-09-25T11:26:50.853", "event": "step_ok", "step": "s5"}
+{"ts": "2026-09-25T11:26:50.854", "event": "step_start", "step": "s6", "intent": "Read balance: Balance of account {{account_number}}"}
+{"ts": "2026-09-25T11:26:50.859", "event": "step_ok", "step": "s6"}
+{"ts": "2026-09-25T11:26:50.862", "event": "result", "status": "success", "code": null}

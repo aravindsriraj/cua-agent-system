@@ -1,0 +1,17 @@
+{
+  "reason": "Step 5 'Click on account \u20221437 to open it': could not click: it did not respond (something may be covering it, or it is disabled)",
+  "ask": "stuck",
+  "run_id": "20260925-112804-run-parabank-account-balance",
+  "capability": "parabank-account-balance",
+  "step": "s5",
+  "expected": {
+    "url_contains": "/parabank/activity.htm",
+    "text_visible": "Account Details"
+  },
+  "observed": {
+    "url": "https://parabank.parasoft.com/parabank/overview.htm",
+    "heading": "Accounts Overview",
+    "text": "Experience the difference Solutions About Us Services Products Locations Admin Page home about contact Welcome Demo Tester Account Services Open New Account Accounts Overview Transfer Funds Bill Pay Find Transactions Update Contact Info Request Loan Log Out Accounts Overview Account Balance* Available Amount \u20221437 $415.50 $415.50 \u20221770 $100.00 $100.00 Total $515.50 *Balance includes deposits that "
+  },
+  "screenshot": "runs/20260925-112804-run-parabank-account-balance/01-s5-stuck.png"
+}

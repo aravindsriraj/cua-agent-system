@@ -1,0 +1,250 @@
+schema_version: 1
+capability:
+  id: saucedemo-checkout
+  version: 1
+  status: draft
+  description: Log in as {username} with {sauce_password}, add the {product_name} to the cart, check out with first name {first_name},
+    last name {last_name} and postal code {postal_code}, reach the checkout overview page and read the item total
+  start_url: https://www.saucedemo.com/
+  surface: web
+inputs:
+  sauce_password:
+    type: secret
+    description: 'Secret: read from the environment, never stored'
+  username:
+    type: string
+    description: The username used to log into the application.
+  product_name:
+    type: string
+    description: The name of the product to add to the cart.
+  first_name:
+    type: string
+    description: The customer's first name for checkout.
+  last_name:
+    type: string
+    description: The customer's last name for checkout.
+  postal_code:
+    type: string
+    description: The customer's postal code for checkout.
+outputs:
+  item_total:
+    type: money
+    description: Item total
+policy:
+  allowed_domains:
+  - saucedemo.com
+  allowed_actions:
+  - navigate
+  - click
+  - double_click
+  - hover
+  - type
+  - select
+  - press_key
+  - go_back
+  - extract
+steps:
+- id: s1
+  intent: Open the start page
+  action: navigate
+  value: https://www.saucedemo.com/
+  expect:
+    text_visible: Swag Labs
+- id: s2
+  intent: Type username
+  action: type
+  target:
+    description: textbox "Username"
+    locators:
+    - by: role
+      value: Username
+      role: textbox
+    - by: placeholder
+      value: Username
+    - by: near_text
+      value: Swag Labs
+      tag: input
+    - by: css
+      value: input[name="user-name"]
+    - by: css
+      value: '#user-name'
+  value: '{{username}}'
+- id: s3
+  intent: Type password placeholder
+  action: type
+  target:
+    description: input "Password"
+    locators:
+    - by: placeholder
+      value: Password
+    - by: css
+      value: input[name="password"]
+    - by: css
+      value: '#password'
+  value: '{{secret:sauce_password}}'
+- id: s4
+  intent: Click Login button
+  action: click
+  target:
+    description: button "Login"
+    locators:
+    - by: role
+      value: Login
+      role: button
+    - by: css
+      value: input[name="login-button"]
+    - by: css
+      value: '#login-button'
+  expect:
+    url_contains: /inventory.html
+    text_visible: Products
+- id: s5
+  intent: Add {{product_name}} to cart
+  action: click
+  target:
+    description: button "Add to cart" in the row for "{{product_name}}"
+    locators:
+    - by: row
+      value: '{{product_name}}'
+      tag: div.inventory_item
+      inner:
+        by: role
+        value: Add to cart
+        role: button
+  expect:
+    url_contains: /inventory.html
+    text_visible: Remove
+- id: s6
+  intent: Click cart icon
+  action: click
+  target:
+    description: button "Cart, 1 items"
+    locators:
+    - by: role
+      value: Cart, 1 items
+      role: button
+    - by: css
+      value: '#shopping_cart_container > a:nth-of-type(1)'
+  expect:
+    url_contains: /cart.html
+    text_visible: Your Cart
+- id: s7
+  intent: Click Checkout button
+  action: click
+  target:
+    description: button "Checkout"
+    locators:
+    - by: role
+      value: Checkout
+      role: button
+    - by: text
+      value: Checkout
+    - by: near_text
+      value: Continue Shopping
+      tag: button
+    - by: css
+      value: button[name="checkout"]
+    - by: css
+      value: '#checkout'
+  expect:
+    url_contains: /checkout-step-one.html
+    text_visible: 'Checkout: Your Information'
+- id: s8
+  intent: Type {{first_name}}
+  action: type
+  target:
+    description: textbox "First Name"
+    locators:
+    - by: role
+      value: First Name
+      role: textbox
+    - by: placeholder
+      value: First Name
+    - by: near_text
+      value: 'Checkout: Your Information'
+      tag: input
+    - by: css
+      value: input[name="firstName"]
+    - by: css
+      value: '#first-name'
+  value: '{{first_name}}'
+- id: s9
+  intent: Type {{last_name}}
+  action: type
+  target:
+    description: textbox "Last Name"
+    locators:
+    - by: role
+      value: Last Name
+      role: textbox
+    - by: placeholder
+      value: Last Name
+    - by: css
+      value: input[name="lastName"]
+    - by: css
+      value: '#last-name'
+  value: '{{last_name}}'
+- id: s10
+  intent: Type {{postal_code}}
+  action: type
+  target:
+    description: textbox "Zip/Postal Code"
+    locators:
+    - by: role
+      value: Zip/Postal Code
+      role: textbox
+    - by: placeholder
+      value: Zip/Postal Code
+    - by: css
+      value: input[name="postalCode"]
+    - by: css
+      value: '#postal-code'
+  value: '{{postal_code}}'
+- id: s11
+  intent: Click Continue button
+  action: click
+  target:
+    description: button "Continue"
+    locators:
+    - by: role
+      value: Continue
+      role: button
+    - by: near_text
+      value: Cancel
+      tag: input
+    - by: css
+      value: input[name="continue"]
+    - by: css
+      value: '#continue'
+  expect:
+    url_contains: /checkout-step-two.html
+    text_visible: 'Checkout: Overview'
+- id: s12
+  intent: 'Read item_total: Item total'
+  action: extract
+  target:
+    description: value after "Price Total"
+    locators:
+    - by: near_text
+      value: Price Total
+      tag: div
+    - by: css
+      value: '#checkout_summary_container > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(6)'
+  output: item_total
+success:
+- url_contains: /checkout-step-two.html
+  text_visible: 'Checkout: Overview'
+provenance:
+  recorded_at: '2026-09-25T06:03:09+00:00'
+  model: gemini-3.8-flash
+  discovery_run: 20260925-113042-record-saucedemo
+  history:
+  - version: 1
+    change: recorded from goal (run 20260925-113042-record-saucedemo)
+    by: model:gemini-3.8-flash
+    at: '2026-09-25T06:03:09+00:00'
+  - version: 1
+    change: 'AI review: checkpoints on 6 steps; success: url_contains ''/checkout-step-two.html'' and text_visible ''Checkout:
+      Overview'''
+    by: model:gemini-3.8-flash
+    at: '2026-09-25T06:03:13+00:00'

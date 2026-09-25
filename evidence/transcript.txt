@@ -1,0 +1,276 @@
+$ uv run cua record https://parabank.parasoft.com/parabank/index.htm Log in as cua_demo_6955 with {password:secret}, open account 31437 and read its balance --name parabank-account-balance --headless
+Recording on https://parabank.parasoft.com/parabank/index.htm (allowed: parabank.parasoft.com). The browser shows who is in control.
+✔ Learned 'parabank-account-balance' v1 (6 steps) -> artifacts/parabank-account-balance
+  AI read the goal: password (secret), username (string), account_number (string)
+  AI review: checkpoints on 3 steps
+  AI review: success: url_contains '/parabank/activity.htm' and text_visible 'Account Details'
+  Try it:  cua run parabank-account-balance username=… account_number=…
+  Review:  cua show parabank-account-balance
+(exit 0)
+
+$ uv run cua show parabank-account-balance
+parabank-account-balance  v1 · draft · web · allowed: parabank.parasoft.com
+
+What it does  Log in as {username} with {password}, open account {account_number} and read its balance
+Needs         password (secret) · username (string) · account_number (string)
+Returns       balance (money)
+Succeeds when "Account Details" is shown and URL has /parabank/activity.htm
+
+Steps
+   1. Open the start page
+   2. Type the username
+   3. Type the password placeholder
+   4. Click Log In button
+   5. Click on account {{account_number}} to open it
+   6. Read balance: Balance of account {{account_number}}
+
+Known outcomes
+  • always (code): off-allowlist → stop · server error → retry · record not found → NOT_FOUND
+  • anything new: a person decides (or the AI, with --ai), and it is remembered here
+
+History
+  v1  2026-09-25 05:56 UTC  recorded from goal (run 20260925-112454-record-parabank)  (model:gemini-3.8-flash)
+  v1  2026-09-25 05:56 UTC  AI review: checkpoints on 3 steps; success: url_contains '/parabank/activity.htm' and text_visible 'Account Details'  (model:gemini-3.8-flash)
+
+File: artifacts/parabank-account-balance/v1.yaml
+(exit 0)
+
+$ uv run cua run parabank-account-balance username=cua_demo_6955 account_number=31437 --headless
+✔ Success: balance: 415.5 (6 steps, 4.2s)
+  details: runs/20260925-112619-run-parabank-account-balance
+(exit 0)
+
+$ uv run cua run parabank-account-balance username=cua_demo_6955 account_number=31770 --headless
+✔ Success: balance: 100.0 (6 steps, 4.0s)
+  details: runs/20260925-112623-run-parabank-account-balance
+(exit 0)
+
+$ uv run cua run parabank-account-balance username=cua_demo_6955 account_number=99999 --headless
+● NOT_FOUND: No match for account_number=99999 on this page.
+  details: runs/20260925-112627-run-parabank-account-balance
+(exit 0)
+
+$ uv run cua run parabank-account-balance username=cua_demo_6955 --headless
+✖ Bad input: missing input 'account_number'
+  Needs: password (secret), username (string), account_number (string)
+(exit 1)
+
+$ uv run cua run parabank-account-balance username=cua_demo_6955 account_number=31437 --inject modal@s5 --ai --headless
+✔ Success: balance: 415.5 (6 steps, 15.9s)
+  handled: s5: AI closed 'system_notice_modal'
+  AI decided: s5: dismiss SYSTEM_NOTICE_MODAL: A scheduled maintenance notice popup is blocking interaction with the page and must be dismissed by clicking OK.
+  learned: artifacts/parabank-account-balance/v2.yaml
+  details: runs/20260925-112635-run-parabank-account-balance
+(exit 0)
+
+$ uv run cua run parabank-account-balance username=cua_demo_6955 account_number=31437 --inject modal@s5 --headless
+✔ Success: balance: 415.5 (6 steps, 6.0s)
+  handled: dismissed 'system_notice_modal'
+  details: runs/20260925-112651-run-parabank-account-balance
+(exit 0)
+
+$ uv run cua run parabank-account-balance username=cua_demo_6955 account_number=31437 --inject expire_session@s5 --ai --headless
+✔ Success: balance: 415.5 (6 steps, 27.4s)
+  handled: user_login_required -> start over
+  AI decided: s5: restart USER_LOGIN_REQUIRED: The user session has expired or logged out, requiring the automation to log in again.
+  learned: artifacts/parabank-account-balance/v3.yaml
+  details: runs/20260925-112657-run-parabank-account-balance
+(exit 0)
+
+$ uv run cua run parabank-account-balance username=cua_demo_6955 account_number=31437 --inject expire_session@s5 --headless
+✔ Success: balance: 415.5 (6 steps, 20.9s)
+  handled: user_login_required -> start over
+  details: runs/20260925-112724-run-parabank-account-balance
+(exit 0)
+
+$ uv run cua run parabank-account-balance username=cua_demo_6955 account_number=31437 --inject http500@s5 --headless
+✔ Success: balance: 415.5 (6 steps, 8.1s)
+  handled: s5: HTTP_503 -> retry
+  details: runs/20260925-112746-run-parabank-account-balance
+(exit 0)
+
+$ uv run cua run parabank-account-balance username=cua_demo_6955 account_number=31437 --version 1 --inject modal@s5 --headless
+✖ Failed at step s5 "Click on account 31437 to open it": UNKNOWN_STATE. could not click: it did not respond (something may be covering it, or it is disabled)
+  expected: {'url_contains': '/parabank/activity.htm', 'text_visible': 'Account Details'}
+  saw:      Accounts Overview https://parabank.parasoft.com/parabank/overview.htm
+  details: runs/20260925-112754-run-parabank-account-balance
+(exit 1)
+
+$ uv run python scripts/operator_demo.py handoff
+⚠️  Needs you: Step 5 'Click on account 31437 to open it': could not click: it did not respond (something may be covering it, or it is disabled)
+   Use the bar at the bottom of the browser window.
+{
+  "status": "success",
+  "capability": "parabank-account-balance",
+  "version": 4,
+  "run_id": "20260925-112804-run-parabank-account-balance",
+  "code": null,
+  "message": "",
+  "outputs": {
+    "balance": 415.5
+  },
+  "failed_step": null,
+  "expected": null,
+  "observed": null,
+  "recoveries": [
+    "s5: 'system_notice' closed by operator"
+  ],
+  "locator_fallbacks": [],
+  "ai_decisions": [],
+  "human_actions": [
+    "click button \"OK\""
+  ],
+  "learned": "artifacts/parabank-account-balance/v4.yaml",
+  "evidence": {
+    "run_dir": "runs/20260925-112804-run-parabank-account-balance",
+    "log": "runs/20260925-112804-run-parabank-account-balance/log.jsonl"
+  },
+  "duration_s": 14.4
+}
+(exit 0)
+
+$ uv run cua show parabank-account-balance
+parabank-account-balance  v4 · draft · web · allowed: parabank.parasoft.com
+
+What it does  Log in as {username} with {password}, open account {account_number} and read its balance
+Needs         password (secret) · username (string) · account_number (string)
+Returns       balance (money)
+Succeeds when "Account Details" is shown and URL has /parabank/activity.htm
+
+Steps
+   1. Open the start page
+   2. Type the username
+   3. Type the password placeholder
+   4. Click Log In button
+   5. Click on account {{account_number}} to open it
+   6. Read balance: Balance of account {{account_number}}
+
+Known outcomes
+  • "System notice" is shown → recover: dismiss  (from human)
+  • always (code): off-allowlist → stop · server error → retry · record not found → NOT_FOUND
+  • anything new: a person decides (or the AI, with --ai), and it is remembered here
+
+History
+  v1  2026-09-25 05:56 UTC  recorded from goal (run 20260925-112454-record-parabank)  (model:gemini-3.8-flash)
+  v1  2026-09-25 05:56 UTC  AI review: checkpoints on 3 steps; success: url_contains '/parabank/activity.htm' and text_visible 'Account Details'  (model:gemini-3.8-flash)
+  v4  2026-09-25 05:58 UTC  learned outcome 'system_notice' (dismiss) at s5  (operator)
+
+File: artifacts/parabank-account-balance/v4.yaml
+(exit 0)
+
+$ uv run python scripts/operator_demo.py transfer
+⚠️  Needs you: Confirm risky action: The action involves clicking a button to finalize a financial transfer, which is an irreversible transaction requiring human oversight.
+   Use the bar at the bottom of the browser window.
+operator approves: Confirm risky action: The action involves clicking a button to finalize a financial transfer, which is an irreversible transaction requiring human oversight.
+learned parabank-transfer v1
+(exit 0)
+
+$ uv run cua show parabank-transfer
+parabank-transfer  v1 · draft · web · allowed: parabank.parasoft.com
+
+What it does  Log in as {username} with {password}, then use Transfer Funds to transfer 1 from account {from_account} to account {to_account} and reach the transfer confirmation
+Needs         password (secret) · username (string) · amount (number) · from_account (string) · to_account (string)
+Returns       nothing
+Succeeds when "Transfer Complete!" is shown and URL has /parabank/transfer.htm
+
+Steps
+   1. Open the start page
+   2. Type username {{username}}
+   3. Type secret password
+   4. Click Log In button
+   5. Click Transfer Funds
+   6. Type 1 in Amount
+   7. Choose {{from_account}} in combobox "From account #" in the row for "{{from_account}}"
+   8. Choose {{to_account}} in combobox "to account #" in the row for "{{from_account}}"
+   9. Click TRANSFER button ⚠ risky (AI review: Submits a fund transfer between accounts, executing a financial transaction.)
+
+Known outcomes
+  • always (code): off-allowlist → stop · server error → retry · record not found → NOT_FOUND
+  • anything new: a person decides (or the AI, with --ai), and it is remembered here
+
+History
+  v1  2026-09-25 06:00 UTC  recorded from goal (run 20260925-112818-record-parabank)  (model:gemini-3.8-flash)
+  v1  2026-09-25 06:00 UTC  AI review: checkpoints on 4 steps; success: url_contains '/parabank/transfer.htm' and text_visible 'Transfer Complete!'; s9 is risky: Submits a fund transfer between accounts, executing a financial transaction.  (model:gemini-3.8-flash)
+
+File: artifacts/parabank-transfer/v1.yaml
+(exit 0)
+
+$ uv run cua run parabank-transfer username=cua_demo_6955 amount=1 from_account=31437 to_account=31770 --headless
+⏸ Needs confirmation: 'Click TRANSFER button' is risky and this capability is still a draft. Approve it with `cua approve parabank-transfer` or confirm when asked.
+  details: runs/20260925-113031-run-parabank-transfer
+(exit 2)
+
+$ uv run cua approve parabank-transfer --by reviewer
+✔ parabank-transfer v1 approved. Risky steps will now run without asking.
+(exit 0)
+
+$ uv run cua run parabank-transfer username=cua_demo_6955 amount=1 from_account=31437 to_account=31770 --headless
+✔ Success: done (9 steps, 5.5s)
+  details: runs/20260925-113036-run-parabank-transfer
+(exit 0)
+
+$ uv run cua record https://www.saucedemo.com/ Log in as standard_user with {sauce_password:secret}, add the Sauce Labs Backpack to the cart, check out with first name Ada, last name Lovelace and postal code 10001, reach the checkout overview page and read the item total --name saucedemo-checkout --headless
+Recording on https://www.saucedemo.com/ (allowed: saucedemo.com). The browser shows who is in control.
+✔ Learned 'saucedemo-checkout' v1 (12 steps) -> artifacts/saucedemo-checkout
+  AI read the goal: sauce_password (secret), username (string), product_name (string), first_name (string), last_name (string), postal_code (string)
+  AI review: checkpoints on 6 steps
+  AI review: success: url_contains '/checkout-step-two.html' and text_visible 'Checkout: Overview'
+  Try it:  cua run saucedemo-checkout username=… product_name=… first_name=… last_name=… postal_code=…
+  Review:  cua show saucedemo-checkout
+(exit 0)
+
+$ uv run cua show saucedemo-checkout
+saucedemo-checkout  v1 · draft · web · allowed: saucedemo.com
+
+What it does  Log in as {username} with {sauce_password}, add the {product_name} to the cart, check out with first name {first_name}, last name {last_name} and postal code {postal_code}, reach the checkout overview page and read the item total
+Needs         sauce_password (secret) · username (string) · product_name (string) · first_name (string) · last_name (string) · postal_code (string)
+Returns       item_total (money)
+Succeeds when "Checkout: Overview" is shown and URL has /checkout-step-two.html
+
+Steps
+   1. Open the start page
+   2. Type username
+   3. Type password placeholder
+   4. Click Login button
+   5. Add {{product_name}} to cart
+   6. Click cart icon
+   7. Click Checkout button
+   8. Type {{first_name}}
+   9. Type {{last_name}}
+  10. Type {{postal_code}}
+  11. Click Continue button
+  12. Read item_total: Item total
+
+Known outcomes
+  • always (code): off-allowlist → stop · server error → retry · record not found → NOT_FOUND
+  • anything new: a person decides (or the AI, with --ai), and it is remembered here
+
+History
+  v1  2026-09-25 06:03 UTC  recorded from goal (run 20260925-113042-record-saucedemo)  (model:gemini-3.8-flash)
+  v1  2026-09-25 06:03 UTC  AI review: checkpoints on 6 steps; success: url_contains '/checkout-step-two.html' and text_visible 'Checkout: Overview'  (model:gemini-3.8-flash)
+
+File: artifacts/saucedemo-checkout/v1.yaml
+(exit 0)
+
+$ uv run cua run saucedemo-checkout username=standard_user product_name=Sauce Labs Backpack first_name=Grace last_name=Hopper postal_code=94016 --headless
+✔ Success: item_total: 29.99 (12 steps, 3.8s)
+  details: runs/20260925-113313-run-saucedemo-checkout
+(exit 0)
+
+$ uv run cua run saucedemo-checkout username=standard_user product_name=Sauce Labs Bike Light first_name=Grace last_name=Hopper postal_code=94016 --headless
+✔ Success: item_total: 9.99 (12 steps, 3.8s)
+  details: runs/20260925-113317-run-saucedemo-checkout
+(exit 0)
+
+$ uv run cua run saucedemo-checkout username=standard_user product_name=Sauce Labs Spaceship first_name=Grace last_name=Hopper postal_code=94016 --headless
+● NOT_FOUND: No match for product_name=Sauce Labs Spaceship on this page.
+  details: runs/20260925-113321-run-saucedemo-checkout
+(exit 0)
+
+$ uv run cua list
+NAME                                      VER  STATUS    LAST RUN
+parabank-account-balance                   v4  draft     success
+parabank-transfer                          v1  approved  success
+saucedemo-checkout                         v1  draft     business_outcome NOT_FOUND
+(exit 0)
+

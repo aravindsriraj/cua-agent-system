@@ -1,0 +1,26 @@
+{
+  "status": "failed",
+  "capability": "parabank-account-balance",
+  "version": 2,
+  "run_id": "20260924-083018-run-parabank-account-balance",
+  "code": "RECOVERY_EXHAUSTED",
+  "message": "'HTTP_502' kept happening after 2 recoveries.",
+  "outputs": {},
+  "failed_step": "s1",
+  "expected": null,
+  "observed": null,
+  "recoveries": [
+    "s1: HTTP_502 -> retry",
+    "s1: HTTP_502 -> retry"
+  ],
+  "locator_fallbacks": [],
+  "human_actions": [],
+  "learned": null,
+  "evidence": {
+    "run_dir": "runs/20260924-083018-run-parabank-account-balance",
+    "log": "runs/\u2022\u2022\u2022\u20220924-\u2022\u20223018-run-parabank-account-balance/log.jsonl",
+    "screenshot": "runs/20260924-083018-run-parabank-account-balance/01-final.png",
+    "a11y_snapshot": "runs/20260924-083018-run-parabank-account-balance/a11y.txt"
+  },
+  "duration_s": 5.6
+}

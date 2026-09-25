@@ -1,0 +1,25 @@
+{"ts": "2026-09-25T11:28:04.002", "event": "start", "capability": "parabank-account-balance", "version": 1, "ai": false, "inputs": {"username": "cua_demo_6955", "account_number": "\u20221437", "password": "[secret]"}}
+{"ts": "2026-09-25T11:28:04.659", "event": "step_start", "step": "s1", "intent": "Open the start page"}
+{"ts": "2026-09-25T11:28:07.101", "event": "step_ok", "step": "s1"}
+{"ts": "2026-09-25T11:28:07.103", "event": "step_start", "step": "s2", "intent": "Type the username"}
+{"ts": "2026-09-25T11:28:07.109", "event": "step_ok", "step": "s2"}
+{"ts": "2026-09-25T11:28:07.112", "event": "step_start", "step": "s3", "intent": "Type the password placeholder"}
+{"ts": "2026-09-25T11:28:07.118", "event": "step_ok", "step": "s3"}
+{"ts": "2026-09-25T11:28:07.118", "event": "step_start", "step": "s4", "intent": "Click Log In button"}
+{"ts": "2026-09-25T11:28:08.516", "event": "step_ok", "step": "s4"}
+{"ts": "2026-09-25T11:28:08.518", "event": "step_start", "step": "s5", "intent": "Click on account {{account_number}} to open it"}
+{"ts": "2026-09-25T11:28:08.518", "event": "fault_injected", "kind": "modal", "step": "s5"}
+{"ts": "2026-09-25T11:28:13.526", "event": "step_miss", "step": "s5", "why": "could not click: it did not respond (something may be covering it, or it is disabled)"}
+{"ts": "2026-09-25T11:28:13.585", "event": "escalation", "reason": "Step 5 'Click on account \u20221437 to open it': could not click: it did not respond (something may be covering it, or it is disabled)", "ask": "stuck", "request": "runs/\u2022\u2022\u2022\u20220925-\u2022\u20222804-run-parabank-account-balance/intervention.json"}
+{"ts": "2026-09-25T11:28:13.585", "event": "control", "owner": "agent", "state": "awaiting_human", "why": "Step 5 'Click on account \u20221437 to open it': could not click: it did not respond (something may be covering it, or it is disabled)"}
+{"ts": "2026-09-25T11:28:15.153", "event": "operator", "action": "take_over"}
+{"ts": "2026-09-25T11:28:15.154", "event": "control", "owner": "human", "state": "human_active", "why": "operator took over"}
+{"ts": "2026-09-25T11:28:16.170", "event": "human_action", "kind": "click", "target": "button \"OK\"", "value": null}
+{"ts": "2026-09-25T11:28:17.173", "event": "operator", "action": "label", "kind": "dismiss", "code": "SYSTEM_NOTICE", "text": "System notice"}
+{"ts": "2026-09-25T11:28:17.174", "event": "control", "owner": "agent", "state": "running", "why": "operator: label"}
+{"ts": "2026-09-25T11:28:17.175", "event": "learned", "outcome": {"id": "system_notice", "kind": "recoverable", "when": {"text_visible": "System notice"}, "message": "System notice", "recover": {"action": "dismiss", "target": {"description": "button \"OK\"", "frames": [], "locators": [{"by": "role", "value": "OK", "role": "button"}, {"by": "text", "value": "OK"}, {"by": "near_text", "value": "Scheduled maintenance tonight at 11 PM.", "tag": "button"}, {"by": "css", "value": "#cua-fault-modal > div:nth-of-type(1) > button:nth-of-type(1)"}]}}, "source": "human"}, "by": "operator"}
+{"ts": "2026-09-25T11:28:17.176", "event": "step_start", "step": "s5", "intent": "Click on account {{account_number}} to open it"}
+{"ts": "2026-09-25T11:28:18.393", "event": "step_ok", "step": "s5"}
+{"ts": "2026-09-25T11:28:18.395", "event": "step_start", "step": "s6", "intent": "Read balance: Balance of account {{account_number}}"}
+{"ts": "2026-09-25T11:28:18.400", "event": "step_ok", "step": "s6"}
+{"ts": "2026-09-25T11:28:18.404", "event": "result", "status": "success", "code": null}

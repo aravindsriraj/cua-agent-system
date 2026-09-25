@@ -1,0 +1,6 @@
+(exit 1)
+$ uv run cua run parabank-account-balance username=john account_id=13344 --inject modal@s5 --headless
+✖ Failed at step s1 "Open the start page": RECOVERY_EXHAUSTED. 'HTTP_502' kept happening after 2 recoveries.
+  handled: s1: HTTP_502 -> retry; s1: HTTP_502 -> retry
+  details: runs/20260924-083018-run-parabank-account-balance
+(exit 1)

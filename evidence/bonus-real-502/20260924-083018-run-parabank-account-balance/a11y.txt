@@ -1,0 +1,30 @@
+- banner:
+  - heading "Bad gateway Error code 502" [level=1]
+  - text: Visit
+  - link "cloudflare.com":
+    - /url: https://www.cloudflare.com/5xx-error-landing?utm_source=errorcode_502&utm_campaign=parabank.parasoft.com
+  - text: for more information. 2026-09-24 03:00:22 UTC
+- text: You
+- heading "Browser" [level=3]
+- text: Working
+- link:
+  - /url: https://www.cloudflare.com/5xx-error-landing?utm_source=errorcode_502&utm_campaign=parabank.parasoft.com
+- text: Frankfurt
+- heading "Cloudflare" [level=3]:
+  - link "Cloudflare":
+    - /url: https://www.cloudflare.com/5xx-error-landing?utm_source=errorcode_502&utm_campaign=parabank.parasoft.com
+- text: Working parabank.parasoft.com
+- heading "Host" [level=3]
+- text: Error
+- heading "What happened?" [level=2]
+- paragraph: The web server reported a bad gateway error.
+- heading "What can I do?" [level=2]
+- paragraph: Please try again in a few minutes.
+- paragraph:
+  - text: "Cloudflare Ray ID:"
+  - strong: a3fe89d9aec34dbb
+  - text: "• Your IP:"
+  - button "Click to reveal"
+  - text: • Performance & security by
+  - link "Cloudflare":
+    - /url: https://www.cloudflare.com/5xx-error-landing?utm_source=errorcode_502&utm_campaign=parabank.parasoft.com

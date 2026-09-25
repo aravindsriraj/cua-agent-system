@@ -1,0 +1,24 @@
+{
+  "status": "business_outcome",
+  "capability": "saucedemo-checkout",
+  "version": 1,
+  "run_id": "20260925-113321-run-saucedemo-checkout",
+  "code": "NOT_FOUND",
+  "message": "No match for product_name=Sauce Labs Spaceship on this page.",
+  "outputs": {},
+  "failed_step": "s5",
+  "expected": null,
+  "observed": null,
+  "recoveries": [],
+  "locator_fallbacks": [],
+  "ai_decisions": [],
+  "human_actions": [],
+  "learned": null,
+  "evidence": {
+    "run_dir": "runs/20260925-113321-run-saucedemo-checkout",
+    "log": "runs/\u2022\u2022\u2022\u20220925-\u2022\u20223321-run-saucedemo-checkout/log.jsonl",
+    "screenshot": "runs/20260925-113321-run-saucedemo-checkout/01-final.png",
+    "a11y_snapshot": "runs/20260925-113321-run-saucedemo-checkout/a11y.txt"
+  },
+  "duration_s": 4.7
+}

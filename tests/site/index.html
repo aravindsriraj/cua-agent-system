@@ -1,0 +1,12 @@
+<html><head><title>First Legacy Bank</title></head><body>
+<table width="100%"><tr><td bgcolor="#003366"><font color="white" size="5">First Legacy Bank</font></td></tr></table>
+<h2>Customer Login</h2>
+<p id="err" style="color:red"></p>
+<form onsubmit="if (!this.u.value) { err.textContent = 'Username is required'; return false; } document.cookie='auth=1; path=/'; location='accounts.html'; return false;">
+<table>
+  <tr><td>Username:</td><td><input name="u"></td></tr>
+  <tr><td>Password:</td><td><input type="password" name="p"></td></tr>
+  <tr><td></td><td><input type="submit" value="Log In"></td></tr>
+</table>
+</form>
+</body></html>

@@ -1,0 +1,21 @@
+[project]
+name = "cua"
+version = "0.1.0"
+description = "Record a computer-use run once with Gemini, replay it deterministically forever."
+requires-python = ">=3.11"
+dependencies = [
+  "google-genai",
+  "playwright",
+  "pydantic>=2",
+  "pyyaml",
+]
+
+[project.scripts]
+cua = "cua.cli:main"
+
+[dependency-groups]
+dev = ["pytest"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

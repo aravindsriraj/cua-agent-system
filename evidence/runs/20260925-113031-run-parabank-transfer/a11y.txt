@@ -1,0 +1,112 @@
+- link:
+  - /url: admin.htm
+  - img
+- link "ParaBank":
+  - /url: index.htm
+  - img "ParaBank"
+- paragraph: Experience the difference
+- list:
+  - listitem: Solutions
+  - listitem:
+    - link "About Us":
+      - /url: about.htm
+  - listitem:
+    - link "Services":
+      - /url: services.htm
+  - listitem:
+    - link "Products":
+      - /url: http://www.parasoft.com/jsp/products.jsp
+  - listitem:
+    - link "Locations":
+      - /url: http://www.parasoft.com/jsp/pr/contacts.jsp
+  - listitem:
+    - link "Admin Page":
+      - /url: admin.htm
+- list:
+  - listitem:
+    - link "home":
+      - /url: index.htm
+  - listitem:
+    - link "about":
+      - /url: about.htm
+  - listitem:
+    - link "contact":
+      - /url: contact.htm
+- paragraph: Welcome Demo Tester
+- heading "Account Services" [level=2]
+- list:
+  - listitem:
+    - link "Open New Account":
+      - /url: openaccount.htm
+  - listitem:
+    - link "Accounts Overview":
+      - /url: overview.htm
+  - listitem:
+    - link "Transfer Funds":
+      - /url: transfer.htm
+  - listitem:
+    - link "Bill Pay":
+      - /url: billpay.htm
+  - listitem:
+    - link "Find Transactions":
+      - /url: findtrans.htm
+  - listitem:
+    - link "Update Contact Info":
+      - /url: updateprofile.htm
+  - listitem:
+    - link "Request Loan":
+      - /url: requestloan.htm
+  - listitem:
+    - link "Log Out":
+      - /url: logout.htm
+- heading "Transfer Funds" [level=1]
+- paragraph:
+  - text: "Amount: $"
+  - textbox: "1"
+- text: "From account #"
+- combobox:
+  - option "•1437" [selected]
+  - option "•1770"
+- text: "to account #"
+- combobox:
+  - option "•1437"
+  - option "•1770" [selected]
+- button "Transfer"
+- list:
+  - listitem:
+    - link "Home":
+      - /url: index.htm
+    - text: "|"
+  - listitem:
+    - link "About Us":
+      - /url: about.htm
+    - text: "|"
+  - listitem:
+    - link "Services":
+      - /url: services.htm
+    - text: "|"
+  - listitem:
+    - link "Products":
+      - /url: http://www.parasoft.com/jsp/products.jsp
+    - text: "|"
+  - listitem:
+    - link "Locations":
+      - /url: http://www.parasoft.com/jsp/pr/contacts.jsp
+    - text: "|"
+  - listitem:
+    - link "Forum":
+      - /url: http://forums.parasoft.com/
+    - text: "|"
+  - listitem:
+    - link "Site Map":
+      - /url: sitemap.htm
+    - text: "|"
+  - listitem:
+    - link "Contact Us":
+      - /url: contact.htm
+- paragraph: © Parasoft. All rights reserved.
+- list:
+  - listitem: "Visit us at:"
+  - listitem:
+    - link "www.parasoft.com":
+      - /url: http://www.parasoft.com/

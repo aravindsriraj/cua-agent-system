@@ -1,0 +1,28 @@
+{
+  "status": "success",
+  "capability": "parabank-account-balance",
+  "version": 4,
+  "run_id": "20260925-112804-run-parabank-account-balance",
+  "code": null,
+  "message": "",
+  "outputs": {
+    "balance": 415.5
+  },
+  "failed_step": null,
+  "expected": null,
+  "observed": null,
+  "recoveries": [
+    "s5: 'system_notice' closed by operator"
+  ],
+  "locator_fallbacks": [],
+  "ai_decisions": [],
+  "human_actions": [
+    "click button \"OK\""
+  ],
+  "learned": "artifacts/parabank-account-balance/v4.yaml",
+  "evidence": {
+    "run_dir": "runs/20260925-112804-run-parabank-account-balance",
+    "log": "runs/\u2022\u2022\u2022\u20220925-\u2022\u20222804-run-parabank-account-balance/log.jsonl"
+  },
+  "duration_s": 14.4
+}

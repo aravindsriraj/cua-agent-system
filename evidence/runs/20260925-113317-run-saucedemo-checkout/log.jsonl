@@ -1,0 +1,26 @@
+{"ts": "2026-09-25T11:33:17.897", "event": "start", "capability": "saucedemo-checkout", "version": 1, "ai": false, "inputs": {"username": "standard_user", "product_name": "Sauce Labs Bike Light", "first_name": "Grace", "last_name": "Hopper", "postal_code": "\u20224016", "sauce_password": "[secret]"}}
+{"ts": "2026-09-25T11:33:18.103", "event": "step_start", "step": "s1", "intent": "Open the start page"}
+{"ts": "2026-09-25T11:33:18.952", "event": "step_ok", "step": "s1"}
+{"ts": "2026-09-25T11:33:18.954", "event": "step_start", "step": "s2", "intent": "Type username"}
+{"ts": "2026-09-25T11:33:18.963", "event": "step_ok", "step": "s2"}
+{"ts": "2026-09-25T11:33:18.964", "event": "step_start", "step": "s3", "intent": "Type password placeholder"}
+{"ts": "2026-09-25T11:33:18.980", "event": "step_ok", "step": "s3"}
+{"ts": "2026-09-25T11:33:18.981", "event": "step_start", "step": "s4", "intent": "Click Login button"}
+{"ts": "2026-09-25T11:33:19.515", "event": "step_ok", "step": "s4"}
+{"ts": "2026-09-25T11:33:19.516", "event": "step_start", "step": "s5", "intent": "Add {{product_name}} to cart"}
+{"ts": "2026-09-25T11:33:20.048", "event": "step_ok", "step": "s5"}
+{"ts": "2026-09-25T11:33:20.050", "event": "step_start", "step": "s6", "intent": "Click cart icon"}
+{"ts": "2026-09-25T11:33:20.579", "event": "step_ok", "step": "s6"}
+{"ts": "2026-09-25T11:33:20.580", "event": "step_start", "step": "s7", "intent": "Click Checkout button"}
+{"ts": "2026-09-25T11:33:21.110", "event": "step_ok", "step": "s7"}
+{"ts": "2026-09-25T11:33:21.111", "event": "step_start", "step": "s8", "intent": "Type {{first_name}}"}
+{"ts": "2026-09-25T11:33:21.117", "event": "step_ok", "step": "s8"}
+{"ts": "2026-09-25T11:33:21.118", "event": "step_start", "step": "s9", "intent": "Type {{last_name}}"}
+{"ts": "2026-09-25T11:33:21.123", "event": "step_ok", "step": "s9"}
+{"ts": "2026-09-25T11:33:21.125", "event": "step_start", "step": "s10", "intent": "Type {{postal_code}}"}
+{"ts": "2026-09-25T11:33:21.129", "event": "step_ok", "step": "s10"}
+{"ts": "2026-09-25T11:33:21.129", "event": "step_start", "step": "s11", "intent": "Click Continue button"}
+{"ts": "2026-09-25T11:33:21.662", "event": "step_ok", "step": "s11"}
+{"ts": "2026-09-25T11:33:21.664", "event": "step_start", "step": "s12", "intent": "Read item_total: Item total"}
+{"ts": "2026-09-25T11:33:21.667", "event": "step_ok", "step": "s12"}
+{"ts": "2026-09-25T11:33:21.669", "event": "result", "status": "success", "code": null}

@@ -1,0 +1,12 @@
+{"ts": "2026-09-25T11:33:21.895", "event": "start", "capability": "saucedemo-checkout", "version": 1, "ai": false, "inputs": {"username": "standard_user", "product_name": "Sauce Labs Spaceship", "first_name": "Grace", "last_name": "Hopper", "postal_code": "\u20224016", "sauce_password": "[secret]"}}
+{"ts": "2026-09-25T11:33:22.100", "event": "step_start", "step": "s1", "intent": "Open the start page"}
+{"ts": "2026-09-25T11:33:22.974", "event": "step_ok", "step": "s1"}
+{"ts": "2026-09-25T11:33:22.975", "event": "step_start", "step": "s2", "intent": "Type username"}
+{"ts": "2026-09-25T11:33:22.986", "event": "step_ok", "step": "s2"}
+{"ts": "2026-09-25T11:33:22.987", "event": "step_start", "step": "s3", "intent": "Type password placeholder"}
+{"ts": "2026-09-25T11:33:23.001", "event": "step_ok", "step": "s3"}
+{"ts": "2026-09-25T11:33:23.002", "event": "step_start", "step": "s4", "intent": "Click Login button"}
+{"ts": "2026-09-25T11:33:23.541", "event": "step_ok", "step": "s4"}
+{"ts": "2026-09-25T11:33:23.542", "event": "step_start", "step": "s5", "intent": "Add {{product_name}} to cart"}
+{"ts": "2026-09-25T11:33:26.578", "event": "step_miss", "step": "s5", "why": "could not find button \"Add to cart\" in the row for \"Sauce Labs Spaceship\""}
+{"ts": "2026-09-25T11:33:26.622", "event": "result", "status": "business_outcome", "code": "NOT_FOUND"}

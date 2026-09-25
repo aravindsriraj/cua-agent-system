@@ -1,0 +1,21 @@
+{"ts": "2026-09-25T11:30:31.531", "event": "start", "capability": "parabank-transfer", "version": 1, "ai": false, "inputs": {"username": "cua_demo_6955", "amount": "1", "from_account": "\u20221437", "to_account": "\u20221770", "password": "[secret]"}}
+{"ts": "2026-09-25T11:30:31.748", "event": "step_start", "step": "s1", "intent": "Open the start page"}
+{"ts": "2026-09-25T11:30:33.925", "event": "step_ok", "step": "s1"}
+{"ts": "2026-09-25T11:30:33.926", "event": "step_start", "step": "s2", "intent": "Type username {{username}}"}
+{"ts": "2026-09-25T11:30:33.931", "event": "step_ok", "step": "s2"}
+{"ts": "2026-09-25T11:30:33.932", "event": "step_start", "step": "s3", "intent": "Type secret password"}
+{"ts": "2026-09-25T11:30:33.944", "event": "step_ok", "step": "s3"}
+{"ts": "2026-09-25T11:30:33.945", "event": "step_start", "step": "s4", "intent": "Click Log In button"}
+{"ts": "2026-09-25T11:30:35.359", "event": "step_ok", "step": "s4"}
+{"ts": "2026-09-25T11:30:35.360", "event": "step_start", "step": "s5", "intent": "Click Transfer Funds"}
+{"ts": "2026-09-25T11:30:36.413", "event": "step_ok", "step": "s5"}
+{"ts": "2026-09-25T11:30:36.415", "event": "step_start", "step": "s6", "intent": "Type 1 in Amount"}
+{"ts": "2026-09-25T11:30:36.421", "event": "step_ok", "step": "s6"}
+{"ts": "2026-09-25T11:30:36.422", "event": "step_start", "step": "s7", "intent": "Choose {{from_account}} in combobox \"From account #\" in the row for \"{{from_account}}\""}
+{"ts": "2026-09-25T11:30:36.425", "event": "step_ok", "step": "s7"}
+{"ts": "2026-09-25T11:30:36.426", "event": "step_start", "step": "s8", "intent": "Choose {{to_account}} in combobox \"to account #\" in the row for \"{{from_account}}\""}
+{"ts": "2026-09-25T11:30:36.429", "event": "step_ok", "step": "s8"}
+{"ts": "2026-09-25T11:30:36.429", "event": "step_start", "step": "s9", "intent": "Click TRANSFER button"}
+{"ts": "2026-09-25T11:30:36.464", "event": "escalation", "reason": "Approve risky step: Click TRANSFER button", "ask": "approval", "request": "runs/\u2022\u2022\u2022\u20220925-\u2022\u20223031-run-parabank-transfer/intervention.json"}
+{"ts": "2026-09-25T11:30:36.464", "event": "risk_gate", "step": "s9", "decision": "unavailable"}
+{"ts": "2026-09-25T11:30:36.520", "event": "result", "status": "needs_confirmation", "code": "RISKY_STEP_NOT_APPROVED"}

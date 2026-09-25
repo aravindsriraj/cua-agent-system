@@ -1,0 +1,15 @@
+{"ts": "2026-09-25T11:27:46.110", "event": "start", "capability": "parabank-account-balance", "version": 3, "ai": false, "inputs": {"username": "cua_demo_6955", "account_number": "\u20221437", "password": "[secret]"}}
+{"ts": "2026-09-25T11:27:46.318", "event": "step_start", "step": "s1", "intent": "Open the start page"}
+{"ts": "2026-09-25T11:27:48.804", "event": "step_ok", "step": "s1"}
+{"ts": "2026-09-25T11:27:48.806", "event": "step_start", "step": "s2", "intent": "Type the username"}
+{"ts": "2026-09-25T11:27:48.814", "event": "step_ok", "step": "s2"}
+{"ts": "2026-09-25T11:27:48.815", "event": "step_start", "step": "s3", "intent": "Type the password placeholder"}
+{"ts": "2026-09-25T11:27:48.828", "event": "step_ok", "step": "s3"}
+{"ts": "2026-09-25T11:27:48.828", "event": "step_start", "step": "s4", "intent": "Click Log In button"}
+{"ts": "2026-09-25T11:27:50.441", "event": "step_ok", "step": "s4"}
+{"ts": "2026-09-25T11:27:50.442", "event": "step_start", "step": "s5", "intent": "Click on account {{account_number}} to open it"}
+{"ts": "2026-09-25T11:27:50.443", "event": "fault_injected", "kind": "http500", "step": "s5"}
+{"ts": "2026-09-25T11:27:50.997", "event": "step_miss", "step": "s5", "why": "checkpoint not reached"}
+{"ts": "2026-09-25T11:27:53.741", "event": "step_start", "step": "s6", "intent": "Read balance: Balance of account {{account_number}}"}
+{"ts": "2026-09-25T11:27:54.252", "event": "step_ok", "step": "s6"}
+{"ts": "2026-09-25T11:27:54.253", "event": "result", "status": "success", "code": null}

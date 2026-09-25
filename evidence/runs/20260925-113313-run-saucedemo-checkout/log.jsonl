@@ -1,0 +1,26 @@
+{"ts": "2026-09-25T11:33:13.872", "event": "start", "capability": "saucedemo-checkout", "version": 1, "ai": false, "inputs": {"username": "standard_user", "product_name": "Sauce Labs Backpack", "first_name": "Grace", "last_name": "Hopper", "postal_code": "\u20224016", "sauce_password": "[secret]"}}
+{"ts": "2026-09-25T11:33:14.077", "event": "step_start", "step": "s1", "intent": "Open the start page"}
+{"ts": "2026-09-25T11:33:14.948", "event": "step_ok", "step": "s1"}
+{"ts": "2026-09-25T11:33:14.949", "event": "step_start", "step": "s2", "intent": "Type username"}
+{"ts": "2026-09-25T11:33:14.961", "event": "step_ok", "step": "s2"}
+{"ts": "2026-09-25T11:33:14.962", "event": "step_start", "step": "s3", "intent": "Type password placeholder"}
+{"ts": "2026-09-25T11:33:14.978", "event": "step_ok", "step": "s3"}
+{"ts": "2026-09-25T11:33:14.979", "event": "step_start", "step": "s4", "intent": "Click Login button"}
+{"ts": "2026-09-25T11:33:15.515", "event": "step_ok", "step": "s4"}
+{"ts": "2026-09-25T11:33:15.517", "event": "step_start", "step": "s5", "intent": "Add {{product_name}} to cart"}
+{"ts": "2026-09-25T11:33:16.047", "event": "step_ok", "step": "s5"}
+{"ts": "2026-09-25T11:33:16.049", "event": "step_start", "step": "s6", "intent": "Click cart icon"}
+{"ts": "2026-09-25T11:33:16.579", "event": "step_ok", "step": "s6"}
+{"ts": "2026-09-25T11:33:16.581", "event": "step_start", "step": "s7", "intent": "Click Checkout button"}
+{"ts": "2026-09-25T11:33:17.113", "event": "step_ok", "step": "s7"}
+{"ts": "2026-09-25T11:33:17.114", "event": "step_start", "step": "s8", "intent": "Type {{first_name}}"}
+{"ts": "2026-09-25T11:33:17.120", "event": "step_ok", "step": "s8"}
+{"ts": "2026-09-25T11:33:17.121", "event": "step_start", "step": "s9", "intent": "Type {{last_name}}"}
+{"ts": "2026-09-25T11:33:17.127", "event": "step_ok", "step": "s9"}
+{"ts": "2026-09-25T11:33:17.128", "event": "step_start", "step": "s10", "intent": "Type {{postal_code}}"}
+{"ts": "2026-09-25T11:33:17.132", "event": "step_ok", "step": "s10"}
+{"ts": "2026-09-25T11:33:17.133", "event": "step_start", "step": "s11", "intent": "Click Continue button"}
+{"ts": "2026-09-25T11:33:17.663", "event": "step_ok", "step": "s11"}
+{"ts": "2026-09-25T11:33:17.664", "event": "step_start", "step": "s12", "intent": "Read item_total: Item total"}
+{"ts": "2026-09-25T11:33:17.667", "event": "step_ok", "step": "s12"}
+{"ts": "2026-09-25T11:33:17.669", "event": "result", "status": "success", "code": null}

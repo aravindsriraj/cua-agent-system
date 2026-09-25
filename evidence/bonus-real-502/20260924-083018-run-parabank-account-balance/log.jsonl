@@ -1,0 +1,8 @@
+{"ts": "2026-09-24T08:30:18.146", "event": "start", "capability": "parabank-account-balance", "version": 2, "inputs": {"username": "john", "account_id": "\u20223344", "password": "[secret]"}}
+{"ts": "2026-09-24T08:30:18.370", "event": "step_start", "step": "s1", "intent": "Open the start page"}
+{"ts": "2026-09-24T08:30:20.161", "event": "step_miss", "step": "s1", "why": "checkpoint not reached"}
+{"ts": "2026-09-24T08:30:20.807", "event": "step_start", "step": "s1", "intent": "Open the start page"}
+{"ts": "2026-09-24T08:30:21.949", "event": "step_miss", "step": "s1", "why": "checkpoint not reached"}
+{"ts": "2026-09-24T08:30:22.584", "event": "step_start", "step": "s1", "intent": "Open the start page"}
+{"ts": "2026-09-24T08:30:23.720", "event": "step_miss", "step": "s1", "why": "checkpoint not reached"}
+{"ts": "2026-09-24T08:30:23.778", "event": "result", "status": "failed", "code": "RECOVERY_EXHAUSTED"}

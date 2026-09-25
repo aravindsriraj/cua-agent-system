@@ -1,0 +1,14 @@
+{"ts": "2026-09-25T11:26:23.559", "event": "start", "capability": "parabank-account-balance", "version": 1, "ai": false, "inputs": {"username": "cua_demo_6955", "account_number": "\u20221770", "password": "[secret]"}}
+{"ts": "2026-09-25T11:26:23.765", "event": "step_start", "step": "s1", "intent": "Open the start page"}
+{"ts": "2026-09-25T11:26:25.625", "event": "step_ok", "step": "s1"}
+{"ts": "2026-09-25T11:26:25.626", "event": "step_start", "step": "s2", "intent": "Type the username"}
+{"ts": "2026-09-25T11:26:25.631", "event": "step_ok", "step": "s2"}
+{"ts": "2026-09-25T11:26:25.632", "event": "step_start", "step": "s3", "intent": "Type the password placeholder"}
+{"ts": "2026-09-25T11:26:25.644", "event": "step_ok", "step": "s3"}
+{"ts": "2026-09-25T11:26:25.645", "event": "step_start", "step": "s4", "intent": "Click Log In button"}
+{"ts": "2026-09-25T11:26:26.776", "event": "step_ok", "step": "s4"}
+{"ts": "2026-09-25T11:26:26.777", "event": "step_start", "step": "s5", "intent": "Click on account {{account_number}} to open it"}
+{"ts": "2026-09-25T11:26:27.597", "event": "step_ok", "step": "s5"}
+{"ts": "2026-09-25T11:26:27.598", "event": "step_start", "step": "s6", "intent": "Read balance: Balance of account {{account_number}}"}
+{"ts": "2026-09-25T11:26:27.603", "event": "step_ok", "step": "s6"}
+{"ts": "2026-09-25T11:26:27.604", "event": "result", "status": "success", "code": null}

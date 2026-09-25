@@ -1,0 +1,24 @@
+<html><head><title>Account</title></head><body>
+<table width="100%"><tr><td bgcolor="#003366"><font color="white" size="5">First Legacy Bank</font></td></tr></table>
+<div id="main"><h2>Account Details</h2>
+<table>
+  <tr><td>Account Number:</td><td class="v"></td></tr>
+  <tr><td>Balance:</td><td class="v"></td></tr>
+</table>
+<form onsubmit="location='done.html'; return false;"><table>
+  <tr><td>To account:</td><td><select name="to"><option>11111</option><option>22222</option></select></td></tr>
+  <tr><td></td><td><input type="submit" value="Transfer Funds"></td></tr></table></form></div>
+<script>
+  if (!document.cookie.includes('auth=1')) {
+    document.getElementById('main').innerHTML = '<h2>Error!</h2><p>An internal error has occurred.</p>' +
+      '<table><tr><td>Username:</td><td><input name="u"></td></tr><tr><td>Password:</td><td><input type="password" name="p"></td></tr></table>';
+  }
+  // values arrive late, like an AJAX-driven legacy screen
+  const id = new URLSearchParams(location.search).get('id');
+  const bal = {'11111': '$515.50', '22222': '$20.00'}[id];
+  setTimeout(() => {
+    const v = document.querySelectorAll('td.v');
+    v[0].textContent = id; v[1].textContent = bal || '';
+  }, 300);
+</script>
+</body></html>
