@@ -40,7 +40,7 @@ One Pydantic-validated YAML file per version, `artifacts/<name>/v<N>.yaml`, read
 ```yaml
 capability: {id, version, status: draft|approved, description: "…open account {account_number}…", start_url, surface: web}
 inputs:   {username: {type: string}, password: {type: secret}, account_number: {type: string}}   # chosen by the AI
-outputs:  {balance: {type: money, sensitive: true}}
+outputs:  {balance: {type: money, sensitive: false}}         # the AI decides; sensitive → stored as [sensitive]
 policy:   {allowed_domains: [parabank.parasoft.com], allowed_actions: [navigate, click, type, select, …]}
 steps:
 - id: s5
