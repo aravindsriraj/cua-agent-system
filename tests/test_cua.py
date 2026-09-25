@@ -477,3 +477,10 @@ def test_allowlist():
     assert domain_allowed("https://parabank.parasoft.com/x", ["parabank.parasoft.com"])
     assert not domain_allowed("https://evil.com/?parabank.parasoft.com", ["parabank.parasoft.com"])
     assert not domain_allowed("https://parasoft.com.evil.com/", ["parasoft.com"])
+
+
+def test_recording_stops_at_its_time_limit(server):
+    rec = agent.Recorder(server, GOAL, "fake", human=False, headless=True, secrets={"pw": SECRET}, name="slow")
+    agent.genai.Client = lambda: FakeModel(rec)
+    assert asyncio.run(rec.run(timeout=0)) is None
+    assert "time limit" in rec.stop_reason and not A.versions("slow")

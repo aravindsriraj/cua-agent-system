@@ -11,6 +11,7 @@ import base64
 import hashlib
 import json
 import re
+import time
 from typing import get_args
 from urllib.parse import urlsplit
 
@@ -93,7 +94,7 @@ def slug(text: str) -> str:
 
 
 class Stopped(Exception):
-    """Ends a recording cleanly: denied risky action, no human to answer, or out of turns."""
+    """Ends a recording cleanly: denied risky action, no human to answer, out of turns or out of time."""
 
 
 class Recorder:
@@ -164,7 +165,8 @@ class Recorder:
         self.template = re.sub(r"\{\{(?:secret:)?(\w+)\}\}", r"{\1}", templatize(self.goal, self.examples))
 
     # ---- the loop -------------------------------------------------------------------------------
-    async def run(self, max_steps: int = 40) -> Artifact | None:
+    async def run(self, max_steps: int = 40, timeout: float = 600) -> Artifact | None:
+        deadline = time.monotonic() + timeout  # checked before each model turn: never mid-action or while a person works
         try:
             await self.surface.open(self.url)
             plan = await assist.plan_goal(self.goal)
@@ -180,6 +182,8 @@ class Recorder:
             inp: list = [{"type": "text", "text": prompt + f"\nCurrent URL: {self.surface.page.url}"}, await self._image()]
             prev, nudges, last_hash, same = None, 0, None, 0
             for turn in range(max_steps):
+                if time.monotonic() > deadline:
+                    raise Stopped(f"time limit of {timeout:g}s reached before the goal was met")
                 kw = {"previous_interaction_id": prev} if prev else {}
                 it = await client.aio.interactions.create(model=self.model, input=inp, tools=TOOLS, **kw)
                 prev = it.id

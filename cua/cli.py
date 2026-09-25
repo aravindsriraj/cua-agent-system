@@ -48,7 +48,7 @@ def cmd_record(a) -> int:
                    secrets=secrets, name=a.name, allow=a.allow)
     print(f"Recording on {a.url} (allowed: {', '.join(rec.domains)}). The browser shows who is in control.")
     try:
-        art = asyncio.run(rec.run(a.max_steps))
+        art = asyncio.run(rec.run(a.max_steps, a.timeout))
     except Exception as e:  # e.g. the model API refused a request: one clear line, full trace in the run log
         rec.log.log("crash", error=repr(e), trace=traceback.format_exc())
         print(f"✖ Recording stopped by an error: {str(e).splitlines()[0][:300]}\n  details: {rec.log.dir}")
@@ -182,6 +182,7 @@ def main(argv: list[str] | None = None) -> int:
                    help="also allow this site, e.g. a login provider (repeatable)")
     r.add_argument("--model", help="Gemini model (default: gemini-3.8-flash)")
     r.add_argument("--max-steps", type=int, default=40)
+    r.add_argument("--timeout", type=float, default=600, help="seconds before the recording gives up (default 600)")
     r.add_argument("--headless", action="store_true", help="no visible browser, so nobody is asked; fail instead of waiting")
 
     u = sub.add_parser("run", help="replay a capability deterministically (no model)")

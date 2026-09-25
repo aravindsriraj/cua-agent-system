@@ -157,7 +157,7 @@ People decide approvals, CAPTCHAs (never solved automatically), and new screens 
 | Server error (HTTP 5xx) | waits (2 s, then 4 s) and reloads | code |
 | The requested record doesn't exist (account 99999) | returns `business_outcome NOT_FOUND` | code |
 | A risky step on a draft capability | stops before it: `needs_confirmation`, nothing submitted | code |
-| Anything new | a person takes over the same browser and labels the screen, or the AI decides with `--ai`; saved as the next version | person or AI |
+| Anything new (e.g. the first "wrong password" error) | a person takes over the same browser and labels the screen, or the AI decides with `--ai`; saved as the next version | person or AI |
 | Anything new, nobody watching (`--headless`) | `failed UNKNOWN_STATE`, with a screenshot and a page snapshot | code |
 
 Every run writes `runs/<id>/`: a redacted event log, screenshots, and `result.json`.
@@ -174,7 +174,7 @@ Every run writes `runs/<id>/`: a redacted event log, screenshots, and `result.js
 ## Tests (no network, no API key)
 
 ```bash
-uv run pytest     # 30 tests, a few minutes
+uv run pytest     # 31 tests, a few minutes
 ```
 
 The tests drive the real recorder and replayer against a local "legacy" site in `tests/site/`: table layouts, no ids,
@@ -192,6 +192,7 @@ To regenerate `evidence/` against the live sites: `./scripts/make_evidence.sh`.
 | `--allow DOMAIN` | record | also allow another domain, e.g. an SSO login (repeatable). By default only the start site and its subdomains are allowed |
 | `--model` | record | Gemini model (default `gemini-3.8-flash`) |
 | `--max-steps` | record | model turn budget (default 40) |
+| `--timeout` | record | seconds before the recording gives up and saves nothing (default 600) |
 | `--version N` | run, show | use a specific version (default: latest) |
 | `--ai` | run | let the AI handle a new screen or a moved element instead of a person |
 | `--inject FAULT@STEP` | run | simulate `slow`, `http500`, `expire_session` or `modal` before a step (repeatable) |

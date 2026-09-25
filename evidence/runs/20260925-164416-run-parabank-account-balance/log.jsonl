@@ -1,0 +1,11 @@
+{"ts": "2026-09-25T16:44:16.950", "event": "start", "capability": "parabank-account-balance", "version": 5, "ai": false, "inputs": {"username": "john", "account_number": "\u20222345", "password": "[secret]"}}
+{"ts": "2026-09-25T16:44:17.272", "event": "step_start", "step": "s1", "intent": "Open the start page"}
+{"ts": "2026-09-25T16:44:19.228", "event": "step_ok", "step": "s1"}
+{"ts": "2026-09-25T16:44:19.230", "event": "step_start", "step": "s2", "intent": "Type the username"}
+{"ts": "2026-09-25T16:44:19.247", "event": "step_ok", "step": "s2"}
+{"ts": "2026-09-25T16:44:19.249", "event": "step_start", "step": "s3", "intent": "Type the password placeholder"}
+{"ts": "2026-09-25T16:44:19.269", "event": "step_ok", "step": "s3"}
+{"ts": "2026-09-25T16:44:19.270", "event": "step_start", "step": "s4", "intent": "Click Log In button"}
+{"ts": "2026-09-25T16:44:30.206", "event": "step_miss", "step": "s4", "why": "checkpoint not reached"}
+{"ts": "2026-09-25T16:44:30.223", "event": "outcome", "id": "invalid_login", "kind": "business_outcome", "source": "human", "step": "s4"}
+{"ts": "2026-09-25T16:44:30.279", "event": "result", "status": "business_outcome", "code": "INVALID_LOGIN"}

@@ -4,6 +4,7 @@ A person normally does this by clicking the control bar in the browser window. H
 (`take_over`, `approve`, `label`) are sent through the same binding, so the evidence is reproducible.
 
   uv run python scripts/operator_demo.py handoff    # no AI: an unknown pop-up -> operator takes over, closes it, labels it
+  uv run python scripts/operator_demo.py wrong_password   # no AI: the login is rejected -> operator labels it INVALID_LOGIN
   uv run python scripts/operator_demo.py transfer   # record a risky transfer; operator approves the Transfer click
 """
 import asyncio
@@ -24,11 +25,11 @@ async def bar(page, action: str, data: str = "{}") -> None:
     await page.evaluate(f"() => {{ setTimeout(() => window.__cua_ui('{action}', {data}), 0); }}")
 
 
-async def handoff() -> None:
-    art = A.load("parabank-account-balance", version=1)  # v1 does not know the pop-up yet
+async def replay_with_operator(version: int | None, password: str, label: str, inject=(), fix=None) -> None:
+    """Default replay (no AI). When it asks for a person, the operator takes over, does `fix` if any, labels the screen."""
+    art = A.load("parabank-account-balance", version=version)
     user, account = [k for k, v in art.inputs.items() if v.type != "secret"]  # the names the AI chose, in goal order
-    params = {user: "john", account: "12345", "password": PASSWORD}
-    rp = Replayer(art, params, inject=["modal@s5"], ai=False)  # no AI, so the human decides
+    rp = Replayer(art, {user: "john", account: "12345", "password": password}, inject=inject, ai=False)
 
     async def operator():
         while rp.ctl.state != "awaiting_human":
@@ -36,12 +37,25 @@ async def handoff() -> None:
         await asyncio.sleep(1.5)
         await bar(rp.surface.page, "take_over")
         await asyncio.sleep(1)
-        await rp.surface.page.click("#cua-fault-modal >> text=OK")  # the manual fix, in the same live session
-        await asyncio.sleep(1)
-        await bar(rp.surface.page, "label", "{kind: 'dismiss', code: 'SYSTEM_NOTICE', text: 'System notice'}")
+        if fix:
+            await fix(rp.surface.page)  # the manual work, in the same live session
+            await asyncio.sleep(1)
+        await bar(rp.surface.page, "label", label)
 
     result, _ = await asyncio.gather(rp.run(), operator())
     print(result.model_dump_json(indent=2))
+
+
+async def handoff() -> None:
+    """v1 does not know the pop-up yet: the operator closes it and labels it."""
+    await replay_with_operator(1, PASSWORD, "{kind: 'dismiss', code: 'SYSTEM_NOTICE', text: 'System notice'}",
+                               inject=["modal@s5"], fix=lambda page: page.click("#cua-fault-modal >> text=OK"))
+
+
+async def wrong_password() -> None:
+    """A validation error: the app rejects the login. Nothing to fix; the operator labels it a normal answer."""
+    await replay_with_operator(None, "not-the-password",
+                               "{kind: 'business_outcome', code: 'INVALID_LOGIN', text: 'could not be verified'}")
 
 
 async def transfer() -> None:
@@ -65,4 +79,4 @@ async def transfer() -> None:
 
 
 if __name__ == "__main__":
-    asyncio.run({"handoff": handoff, "transfer": transfer}[sys.argv[1]]())
+    asyncio.run({"handoff": handoff, "wrong_password": wrong_password, "transfer": transfer}[sys.argv[1]]())

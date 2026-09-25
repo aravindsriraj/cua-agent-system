@@ -1,0 +1,17 @@
+{
+  "reason": "Step 4 'Click Log In button': checkpoint not reached",
+  "ask": "stuck",
+  "run_id": "20260925-164359-run-parabank-account-balance",
+  "capability": "parabank-account-balance",
+  "step": "s4",
+  "expected": {
+    "url_contains": "/parabank/overview.htm",
+    "text_visible": "Accounts Overview"
+  },
+  "observed": {
+    "url": "https://parabank.parasoft.com/parabank/login.htm",
+    "heading": "Error!",
+    "text": "Experience the difference Solutions About Us Services Products Locations Admin Page home about contact Customer Login Username Password Forgot login info? Register Error! The username and password could not be verified. Home| About Us| Services| Products| Locations| Forum| Site Map| Contact Us \u00a9 Parasoft. All rights reserved. Visit us at: www.parasoft.com"
+  },
+  "screenshot": "runs/20260925-164359-run-parabank-account-balance/01-s4-stuck.png"
+}

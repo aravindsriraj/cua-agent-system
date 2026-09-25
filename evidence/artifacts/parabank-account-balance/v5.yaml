@@ -1,0 +1,165 @@
+schema_version: 1
+capability:
+  id: parabank-account-balance
+  version: 5
+  status: draft
+  description: Log in as {username} with {password}, open account {account_number} and read its balance
+  start_url: https://parabank.parasoft.com/parabank/index.htm
+  surface: web
+inputs:
+  password:
+    type: secret
+    description: 'Secret: read from the environment, never stored'
+  username:
+    type: string
+    description: The username used to log in to the web app.
+  account_number:
+    type: string
+    description: The account identifier to open and check the balance for.
+outputs:
+  balance:
+    type: money
+    description: Balance of account {{account_number}}
+policy:
+  allowed_domains:
+  - parabank.parasoft.com
+  allowed_actions:
+  - navigate
+  - click
+  - double_click
+  - hover
+  - type
+  - select
+  - press_key
+  - go_back
+  - extract
+steps:
+- id: s1
+  intent: Open the start page
+  action: navigate
+  value: https://parabank.parasoft.com/parabank/index.htm
+  expect:
+    url_contains: /parabank/index.htm
+    text_visible: Customer Login
+- id: s2
+  intent: Type the username
+  action: type
+  target:
+    description: textbox "Username"
+    locators:
+    - by: near_text
+      value: Username
+      tag: input
+    - by: css
+      value: input[name="username"]
+    - by: css
+      value: '#loginPanel > form:nth-of-type(1) > div:nth-of-type(1) > input:nth-of-type(1)'
+  value: '{{username}}'
+- id: s3
+  intent: Type the password placeholder
+  action: type
+  target:
+    description: input "Password"
+    locators:
+    - by: near_text
+      value: Password
+      tag: input
+    - by: css
+      value: input[name="password"]
+    - by: css
+      value: '#loginPanel > form:nth-of-type(1) > div:nth-of-type(2) > input:nth-of-type(1)'
+  value: '{{secret:password}}'
+- id: s4
+  intent: Click Log In button
+  action: click
+  target:
+    description: button "Log In"
+    locators:
+    - by: role
+      value: Log In
+      role: button
+    - by: css
+      value: '#loginPanel > form:nth-of-type(1) > div:nth-of-type(3) > input:nth-of-type(1)'
+  expect:
+    url_contains: /parabank/overview.htm
+    text_visible: Accounts Overview
+- id: s5
+  intent: Click on account {{account_number}} to open it
+  action: click
+  target:
+    description: link "{{account_number}}"
+    locators:
+    - by: role
+      value: '{{account_number}}'
+      role: link
+    - by: text
+      value: '{{account_number}}'
+  expect:
+    url_contains: /parabank/activity.htm
+    text_visible: Account Details
+- id: s6
+  intent: 'Read balance: Balance of account {{account_number}}'
+  action: extract
+  target:
+    description: value after "Balance:"
+    locators:
+    - by: row
+      value: '{{account_number}}'
+      tag: div
+      inner:
+        by: near_text
+        value: 'Balance:'
+        tag: td
+  output: balance
+outcomes:
+- id: system_notice
+  kind: recoverable
+  when:
+    text_visible: System notice
+  message: System notice
+  recover:
+    action: dismiss
+    target:
+      description: button "OK"
+      locators:
+      - by: role
+        value: OK
+        role: button
+      - by: text
+        value: OK
+      - by: near_text
+        value: Scheduled maintenance tonight at 11 PM.
+        tag: button
+      - by: css
+        value: '#cua-fault-modal > div:nth-of-type(1) > button:nth-of-type(1)'
+- id: invalid_login
+  kind: business_outcome
+  when:
+    text_visible: could not be verified
+  code: INVALID_LOGIN
+  message: could not be verified
+success:
+- url_contains: /parabank/activity.htm
+  text_visible: Account Details
+provenance:
+  recorded_at: '2026-09-25T05:56:14+00:00'
+  model: gemini-3.8-flash
+  discovery_run: 20260925-112454-record-parabank
+  history:
+  - version: 1
+    change: recorded from goal (run 20260925-112454-record-parabank)
+    by: model:gemini-3.8-flash
+    at: '2026-09-25T05:56:14+00:00'
+  - version: 1
+    change: 'AI review: checkpoints on 3 steps; success: url_contains ''/parabank/activity.htm'' and text_visible ''Account
+      Details'''
+    by: model:gemini-3.8-flash
+    at: '2026-09-25T05:56:18+00:00'
+  - version: 4
+    change: learned outcome 'system_notice' (dismiss) at s5
+    by: operator
+    at: '2026-09-25T05:58:18+00:00'
+  - version: 5
+    change: learned outcome 'invalid_login' (business_outcome) at s4
+    by: operator
+    at: '2026-09-25T11:14:16+00:00'

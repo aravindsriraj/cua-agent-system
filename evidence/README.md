@@ -53,12 +53,19 @@ Escalations add `intervention.json`, the request routed to a human.
 | 18 | Replay, Sauce Labs Bike Light (a different row) | code | `success` item_total 9.99 | [`…113317-run…`](runs/20260925-113317-run-saucedemo-checkout) |
 | 19 | Replay, Sauce Labs Spaceship (doesn't exist) | code | `business_outcome` NOT_FOUND | [`…113321-run…`](runs/20260925-113321-run-saucedemo-checkout) |
 
+**ParaBank: a validation error (a wrong password).** Run later as `john`, against the same capability.
+
+| # | What | Who decided | Result | Folder |
+|---|------|-------------|--------|--------|
+| 20 | Wrong password, plain replay: the login checkpoint fails, a person takes over and labels the screen "a normal answer: INVALID_LOGIN" | human | `business_outcome` INVALID_LOGIN, remembered as **v5** | [`…164359-run…`](runs/20260925-164359-run-parabank-account-balance) |
+| 21 | Wrong password again, plain replay, nobody watching | code (from v5) | `business_outcome` INVALID_LOGIN, no human | [`…164416-run…`](runs/20260925-164416-run-parabank-account-balance) |
+
 Artifacts:
 - [`parabank-account-balance/`](artifacts/parabank-account-balance): v1 as recorded; v2 and v3 add what the AI decided;
-  v4 adds what the human decided (from v1). `diff` any two.
+  v4 adds what the human decided (from v1); v5 adds the wrong-password answer (row 20). `diff` any two.
 - [`parabank-transfer/v1.yaml`](artifacts/parabank-transfer/v1.yaml): approved.
 - [`saucedemo-checkout/v1.yaml`](artifacts/saucedemo-checkout/v1.yaml).
 
-**What was scripted:** in rows 12 and 13 the operator's clicks (Take over, OK, label; Approve) were sent by
+**What was scripted:** in rows 12, 13 and 20 the operator's clicks (Take over, OK, label; Approve) were sent by
 [`scripts/operator_demo.py`](../scripts/operator_demo.py) so the evidence is reproducible. It goes through the same control-bar
 binding a person uses when clicking in the visible browser. Everything else is real, including every AI decision.

@@ -1,0 +1,18 @@
+{"ts": "2026-09-25T16:43:59.837", "event": "start", "capability": "parabank-account-balance", "version": 4, "ai": false, "inputs": {"username": "john", "account_number": "\u20222345", "password": "[secret]"}}
+{"ts": "2026-09-25T16:44:00.319", "event": "step_start", "step": "s1", "intent": "Open the start page"}
+{"ts": "2026-09-25T16:44:02.859", "event": "step_ok", "step": "s1"}
+{"ts": "2026-09-25T16:44:02.861", "event": "step_start", "step": "s2", "intent": "Type the username"}
+{"ts": "2026-09-25T16:44:02.874", "event": "step_ok", "step": "s2"}
+{"ts": "2026-09-25T16:44:02.876", "event": "step_start", "step": "s3", "intent": "Type the password placeholder"}
+{"ts": "2026-09-25T16:44:02.884", "event": "step_ok", "step": "s3"}
+{"ts": "2026-09-25T16:44:02.885", "event": "step_start", "step": "s4", "intent": "Click Log In button"}
+{"ts": "2026-09-25T16:44:14.012", "event": "step_miss", "step": "s4", "why": "checkpoint not reached"}
+{"ts": "2026-09-25T16:44:14.092", "event": "escalation", "reason": "Step 4 'Click Log In button': checkpoint not reached", "ask": "stuck", "request": "runs/\u2022\u2022\u2022\u20220925-\u2022\u20224359-run-parabank-account-balance/intervention.json"}
+{"ts": "2026-09-25T16:44:14.092", "event": "control", "owner": "agent", "state": "awaiting_human", "why": "Step 4 'Click Log In button': checkpoint not reached"}
+{"ts": "2026-09-25T16:44:15.619", "event": "operator", "action": "take_over"}
+{"ts": "2026-09-25T16:44:15.619", "event": "control", "owner": "human", "state": "human_active", "why": "operator took over"}
+{"ts": "2026-09-25T16:44:16.623", "event": "operator", "action": "label", "kind": "business_outcome", "code": "INVALID_LOGIN", "text": "could not be verified"}
+{"ts": "2026-09-25T16:44:16.623", "event": "control", "owner": "agent", "state": "running", "why": "operator: label"}
+{"ts": "2026-09-25T16:44:16.626", "event": "learned", "outcome": {"id": "invalid_login", "kind": "business_outcome", "when": {"text_visible": "could not be verified"}, "code": "INVALID_LOGIN", "message": "could not be verified", "source": "human"}, "by": "operator"}
+{"ts": "2026-09-25T16:44:16.626", "event": "outcome", "id": "invalid_login", "kind": "business_outcome", "source": "human", "step": "s4"}
+{"ts": "2026-09-25T16:44:16.681", "event": "result", "status": "business_outcome", "code": "INVALID_LOGIN"}

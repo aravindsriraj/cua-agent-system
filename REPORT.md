@@ -95,7 +95,8 @@ run fails with `RECOVERY_EXHAUSTED`.
 - `recoveries`, `locator_fallbacks` (drift), `ai_decisions`, `human_actions`, `learned`
 - `evidence`: a screenshot, the page's accessibility snapshot, and the event log
 
-`evidence/` shows every class on the live sites, including a real ParaBank 502 outage and `NOT_FOUND` on both sites.
+`evidence/` shows every class on the live sites, including a real ParaBank 502 outage, `NOT_FOUND` on both sites, and a
+validation error (a rejected password) that a person labels once and code returns from then on.
 
 ## 4. Heterogeneity & multi-tenant
 
@@ -129,6 +130,9 @@ many tenants move into the base. The per-run data exists today; the counting and
 | three turns with no visible change | a risky step on a draft capability |
 | the model asks a question instead of acting | recoveries used up |
 | Gemini flags an action as risky (`safety_decision`) | |
+
+A recording also stops cleanly, saving nothing, when it runs out of model turns (`--max-steps`, 40) or time
+(`--timeout`, 10 minutes).
 
 **Routing.** Each escalation writes `intervention.json` (capability or goal, step, reason, expected vs observed,
 screenshot), rings the terminal bell and turns the in-page bar red. That file is where a queue, Slack or a pager would

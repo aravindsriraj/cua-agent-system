@@ -274,3 +274,70 @@ parabank-transfer                          v1  approved  success
 saucedemo-checkout                         v1  draft     business_outcome NOT_FOUND
 (exit 0)
 
+# Added later (same script steps, section 5b): a validation error, replayed as john after ParaBank's reset.
+
+$ uv run python scripts/operator_demo.py wrong_password
+⚠️  Needs you: Step 4 'Click Log In button': checkpoint not reached
+   Use the bar at the bottom of the browser window.
+{
+  "status": "business_outcome",
+  "capability": "parabank-account-balance",
+  "version": 5,
+  "run_id": "20260925-164359-run-parabank-account-balance",
+  "code": "INVALID_LOGIN",
+  "message": "could not be verified",
+  "outputs": {},
+  "failed_step": "s4",
+  "expected": null,
+  "observed": null,
+  "recoveries": [],
+  "locator_fallbacks": [],
+  "ai_decisions": [],
+  "human_actions": [],
+  "learned": "artifacts/parabank-account-balance/v5.yaml",
+  "evidence": {
+    "run_dir": "runs/20260925-164359-run-parabank-account-balance",
+    "log": "runs/20260925-164359-run-parabank-account-balance/log.jsonl",
+    "screenshot": "runs/20260925-164359-run-parabank-account-balance/02-final.png",
+    "a11y_snapshot": "runs/20260925-164359-run-parabank-account-balance/a11y.txt"
+  },
+  "duration_s": 16.8
+}
+(exit 0)
+
+$ env PASSWORD=not-the-password uv run cua run parabank-account-balance username=john account_number=12345 --headless
+● INVALID_LOGIN: could not be verified
+  details: runs/20260925-164416-run-parabank-account-balance
+(exit 0)
+
+$ uv run cua show parabank-account-balance
+parabank-account-balance  v5 · draft · web · allowed: parabank.parasoft.com
+
+What it does  Log in as {username} with {password}, open account {account_number} and read its balance
+Needs         password (secret) · username (string) · account_number (string)
+Returns       balance (money)
+Succeeds when "Account Details" is shown and URL has /parabank/activity.htm
+
+Steps
+   1. Open the start page
+   2. Type the username
+   3. Type the password placeholder
+   4. Click Log In button
+   5. Click on account {{account_number}} to open it
+   6. Read balance: Balance of account {{account_number}}
+
+Known outcomes
+  • "System notice" is shown → recover: dismiss  (from human)
+  • "could not be verified" is shown → normal answer INVALID_LOGIN  (from human)
+  • always (code): off-allowlist → stop · server error → retry · record not found → NOT_FOUND
+  • anything new: a person decides (or the AI, with --ai), and it is remembered here
+
+History
+  v1  2026-09-25 05:56 UTC  recorded from goal (run 20260925-112454-record-parabank)  (model:gemini-3.8-flash)
+  v1  2026-09-25 05:56 UTC  AI review: checkpoints on 3 steps; success: url_contains '/parabank/activity.htm' and text_visible 'Account Details'  (model:gemini-3.8-flash)
+  v4  2026-09-25 05:58 UTC  learned outcome 'system_notice' (dismiss) at s5  (operator)
+  v5  2026-09-25 11:14 UTC  learned outcome 'invalid_login' (business_outcome) at s4  (operator)
+
+File: artifacts/parabank-account-balance/v5.yaml
+(exit 0)
+

@@ -32,6 +32,9 @@ run uv run cua run $C "$UNAME=john" "$ACCT=12345" --inject http500@s5 --headless
 run uv run cua run $C "$UNAME=john" "$ACCT=12345" --version 1 --inject modal@s5 --headless
 # 5. Default replay, a human takes over the same live session, closes the pop-up and labels it -> remembered.
 run uv run python scripts/operator_demo.py handoff
+# 5b. A validation error (the app rejects a wrong password): a person labels it a normal answer once; then code returns it.
+run uv run python scripts/operator_demo.py wrong_password
+run env PASSWORD=not-the-password uv run cua run $C "$UNAME=john" "$ACCT=12345" --headless
 run uv run cua show $C
 
 # 6. Risky flow: recording pauses for approval; a draft will not transfer unattended; approved, it does.
