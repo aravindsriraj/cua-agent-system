@@ -24,7 +24,7 @@ cp .env.example .env        # then put your GEMINI_API_KEY in it
 ```
 
 `.env` holds the Gemini key and any secrets your goals use. `.env.example` already contains the public demo passwords
-(`PASSWORD` for the ParaBank demo customer `cua_demo_6955`, `SAUCE_PASSWORD` for SauceDemo). Secrets are never written to artifacts, logs or screenshots.
+(`PASSWORD` for ParaBank's built-in customer `john`, `SAUCE_PASSWORD` for SauceDemo). Secrets are never written to artifacts, logs or screenshots.
 
 To try replay with no Gemini key, copy the capabilities recorded for the evidence: `cp -R evidence/artifacts artifacts`.
 
@@ -57,13 +57,14 @@ the guarantees. People decide approvals, CAPTCHAs, and anything the AI reports i
 
 ## Demo 1: a bank app (live ParaBank, about 3 minutes)
 
-ParaBank is Parasoft's public demo bank. We registered our own demo customer, `cua_demo_6955`
-(accounts 31437 and 31770), because its shared user `john` was returning server errors. Any ParaBank user works.
+ParaBank is Parasoft's public demo bank. It wipes its data from time to time, which deletes registered customers. Its
+built-in customer `john` (password `demo`, accounts 12345, 12456, …) comes back after every wipe, so the demo uses it.
+If john is erroring, register a customer on ParaBank's Register page and use its username and account number.
 
 ```bash
 # 1. Learn it. A browser opens; the bar at the bottom shows who is in control.
 uv run cua record https://parabank.parasoft.com/parabank/index.htm \
-  "Log in as cua_demo_6955 with {password:secret}, open account 31437 and read its balance" \
+  "Log in as john with {password:secret}, open account 12345 and read its balance" \
   --name parabank-account-balance
 #    ✔ Learned 'parabank-account-balance' v1 (6 steps)
 #      AI read the goal: password (secret), username (string), account_number (string)
@@ -72,15 +73,15 @@ uv run cua record https://parabank.parasoft.com/parabank/index.htm \
 uv run cua show parabank-account-balance
 
 # 3. Replay it with the input names printed above. Try other values.
-uv run cua run parabank-account-balance username=cua_demo_6955 account_number=31437     # ✔ Success: balance: …
-uv run cua run parabank-account-balance username=cua_demo_6955 account_number=99999     # ● NOT_FOUND (a normal answer, not a crash)
-uv run cua run parabank-account-balance username=cua_demo_6955                   # ✖ Bad input: missing input 'account_number' (before any browser opens)
+uv run cua run parabank-account-balance username=john account_number=12345     # ✔ Success: balance: …
+uv run cua run parabank-account-balance username=john account_number=99999     # ● NOT_FOUND (a normal answer, not a crash)
+uv run cua run parabank-account-balance username=john                   # ✖ Bad input: missing input 'account_number' (before any browser opens)
 
 # 4. Break it on purpose. Something new: you decide (or the AI, with --ai). After that, code handles it.
-uv run cua run parabank-account-balance username=cua_demo_6955 account_number=31437 --inject modal@s5            # asks YOU (see below)
-uv run cua run parabank-account-balance username=cua_demo_6955 account_number=31437 --inject expire_session@s5 --ai   # AI: start over
-uv run cua run parabank-account-balance username=cua_demo_6955 account_number=31437 --inject expire_session@s5   # code, no AI
-uv run cua run parabank-account-balance username=cua_demo_6955 account_number=31437 --inject http500@s5          # code: retry
+uv run cua run parabank-account-balance username=john account_number=12345 --inject modal@s5            # asks YOU (see below)
+uv run cua run parabank-account-balance username=john account_number=12345 --inject expire_session@s5 --ai   # AI: start over
+uv run cua run parabank-account-balance username=john account_number=12345 --inject expire_session@s5   # code, no AI
+uv run cua run parabank-account-balance username=john account_number=12345 --inject http500@s5          # code: retry
 ```
 
 On the pop-up, the bar turns red (**⚠️ Needs you**). Click **Take over**, close the pop-up, then **This screen means… →

@@ -27,7 +27,7 @@ async def bar(page, action: str, data: str = "{}") -> None:
 async def handoff() -> None:
     art = A.load("parabank-account-balance", version=1)  # v1 does not know the pop-up yet
     user, account = [k for k, v in art.inputs.items() if v.type != "secret"]  # the names the AI chose, in goal order
-    params = {user: "cua_demo_6955", account: "31437", "password": PASSWORD}
+    params = {user: "john", account: "12345", "password": PASSWORD}
     rp = Replayer(art, params, inject=["modal@s5"], ai=False)  # no AI, so the human decides
 
     async def operator():
@@ -45,8 +45,8 @@ async def handoff() -> None:
 
 
 async def transfer() -> None:
-    goal = ("Log in as cua_demo_6955 with {password:secret}, then use Transfer Funds to transfer 1 "
-            "from account 31437 to account 31770 and reach the transfer confirmation")
+    goal = ("Log in as john with {password:secret}, then use Transfer Funds to transfer 1 "
+            "from account 12345 to account 12456 and reach the transfer confirmation")
     rec = Recorder("https://parabank.parasoft.com/parabank/index.htm", goal, MODEL, human=True, headless=False,
                    secrets={"password": PASSWORD}, name="parabank-transfer")
 

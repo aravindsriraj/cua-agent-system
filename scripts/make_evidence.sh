@@ -13,23 +13,23 @@ C=parabank-account-balance
 
 # 1. Discovery: the AI reads the plain-English goal, drives the browser, and reviews the recording.
 run uv run cua record https://parabank.parasoft.com/parabank/index.htm \
-  "Log in as cua_demo_6955 with {password:secret}, open account 31437 and read its balance" --name $C --headless
+  "Log in as john with {password:secret}, open account 12345 and read its balance" --name $C --headless
 run uv run cua show $C
 read UNAME ACCT <<< "$(names $C)"
 
 # 2. Replay (code only): success, another input, a record that does not exist, a missing input.
-for a in 31437 31770 99999; do run uv run cua run $C "$UNAME=cua_demo_6955" "$ACCT=$a" --headless; done
-run uv run cua run $C "$UNAME=cua_demo_6955" --headless
+for a in 12345 12456 99999; do run uv run cua run $C "$UNAME=john" "$ACCT=$a" --headless; done
+run uv run cua run $C "$UNAME=john" --headless
 
 # 3. Something new, with --ai: the AI decides once and it is remembered; the second time code handles it, no AI.
 for f in modal expire_session; do
-  run uv run cua run $C "$UNAME=cua_demo_6955" "$ACCT=31437" --inject $f@s5 --ai --headless
-  run uv run cua run $C "$UNAME=cua_demo_6955" "$ACCT=31437" --inject $f@s5 --headless
+  run uv run cua run $C "$UNAME=john" "$ACCT=12345" --inject $f@s5 --ai --headless
+  run uv run cua run $C "$UNAME=john" "$ACCT=12345" --inject $f@s5 --headless
 done
-run uv run cua run $C "$UNAME=cua_demo_6955" "$ACCT=31437" --inject http500@s5 --headless     # code: retry
+run uv run cua run $C "$UNAME=john" "$ACCT=12345" --inject http500@s5 --headless     # code: retry
 
 # 4. Default replay, no human: an unknown screen fails with evidence (v1 does not know the pop-up).
-run uv run cua run $C "$UNAME=cua_demo_6955" "$ACCT=31437" --version 1 --inject modal@s5 --headless
+run uv run cua run $C "$UNAME=john" "$ACCT=12345" --version 1 --inject modal@s5 --headless
 # 5. Default replay, a human takes over the same live session, closes the pop-up and labels it -> remembered.
 run uv run python scripts/operator_demo.py handoff
 run uv run cua show $C
@@ -38,9 +38,9 @@ run uv run cua show $C
 run uv run python scripts/operator_demo.py transfer
 run uv run cua show parabank-transfer
 read TUSER TAMT TFROM TTO <<< "$(names parabank-transfer)"
-run uv run cua run parabank-transfer "$TUSER=cua_demo_6955" "$TAMT=1" "$TFROM=31437" "$TTO=31770" --headless
+run uv run cua run parabank-transfer "$TUSER=john" "$TAMT=1" "$TFROM=12345" "$TTO=12456" --headless
 run uv run cua approve parabank-transfer --by reviewer
-run uv run cua run parabank-transfer "$TUSER=cua_demo_6955" "$TAMT=1" "$TFROM=31437" "$TTO=31770" --headless
+run uv run cua run parabank-transfer "$TUSER=john" "$TAMT=1" "$TFROM=12345" "$TTO=12456" --headless
 
 # 7. Not just banks: the same system on an unrelated web app (SauceDemo shop).
 S=saucedemo-checkout
